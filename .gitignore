@@ -1,1 +1,4 @@
 vendor/
+public/.env
+public/.htaccess
+.DS_STORE
