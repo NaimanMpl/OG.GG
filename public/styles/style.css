@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --white: #F4F4F4;
+    --primary-color: #FF4747;
+}
+
+* {
+    font-family: 'Inter';
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    gap: .5rem;
+    padding: .7rem 1rem;
+    border-radius: .7rem;
+    font-size: 1rem;
+}
+
+.cta a {
+    padding: 0;
+}
+
+#wrapper {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/img/hero-bg.webp');
+    height: 100vh;
+    background-size: cover;
+    padding: 0 10vmin;
+}
+
+#hero {
+    padding-top: 30vmin;
+    color: var(--white);
+}
+
+#hero h1 {
+    font-size: 5vmin;
+    width: 70%;
+}
+
+#hero p {
+    margin-top: 2rem;
+    width: 50%;
+}
+
+#hero .hero-buttons-container {
+    margin-top: 1.3rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.more-btn-container {
+    border: 1px solid var(--white);
+}
+
+.chat-btn-container {
+    background-color: var(--primary-color);
+}
+
+.more-btn {
+    color: var(--white);
+}
+
+.chat-btn {
+    color: var(--white);
+}

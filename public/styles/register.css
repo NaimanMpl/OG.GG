@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --white: #F4F4F4;
+    --primary-color: #FF4747;
+}
+
+* {
+    font-family: 'Inter';
+    margin: 0;
+    padding: 0;
+}
+
+.error {
+    color: var(--primary-color);
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.success {
+    color: green;
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.register-form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 6rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-form-container h2 {
+    text-align: center;
+}
+
+#register-form {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 50vmin;
+}
+
+button[type="submit"] {
+    border: none;
+    cursor: pointer;
+}
+
+#register-form #register-cta {
+    position: relative;
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-weight: bold;
+    padding: .7rem 2rem;
+    border-radius: .5rem;
+}
+
+#register-cta:active {
+    background-color: #ba3333;
+}
+
+.cta-button-text {
+    color: var(--white);
+    transition: all .2s;
+    opacity: 1;
+}
+
+.loading .cta-button-text {
+    opacity: 0;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1rem;
+    height: 1rem;
+    margin: auto;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    border-top-color: var(--white);
+    animation: button-loading-spinner 1s ease infinite;
+}
+
+#register-form input[type="text"], #register-form input[type="password"] {
+    padding: .6rem 1rem;
+    border: none;
+    border-radius: .3rem;
+    outline: none;
+    background: rgb(230, 230, 230);
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(1turn);
+    }
+}
