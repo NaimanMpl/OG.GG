@@ -16,7 +16,7 @@
                 <input type="text" name="username" id="username">
                 <label for="password">Mot de passe</label>
                 <input type="password" name="password" id="password">
-                <input type="submit" value="Connexion">
+                <input type="submit" value="Connexion" id="login-button">
             </form>
         </section>
     </main>

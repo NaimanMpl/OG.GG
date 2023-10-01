@@ -19,6 +19,7 @@ $app->addErrorMiddleware(true, true, true);
 $app->get('/', HomeController::class . ":render");
 
 $app->get('/login', LoginController::class . ":render");
+$app->post('/login', LoginController::class . ":login");
 
 $app->get('/register', RegisterController::class . ":render");
 $app->post('/register', RegisterController::class . ":register");
