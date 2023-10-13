@@ -8,6 +8,7 @@ use Slim\Factory\AppFactory;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
 use App\Controllers\RegisterController;
+use Slim\Views\PhpRenderer;
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
@@ -92,7 +93,12 @@ $app->get('/matchHistory/{name}', function (Request $request, Response $response
     return $response->withHeader("Content-Type","application/json")->withStatus(200);
 
 });
+
 $app->get('/summoner/{name}', function (Request $request, Response $response, array $args) {
+    $renderer = new PhpRenderer('../views');
+    return $renderer->render($response, 'summoner-page.php');
+});
+$app->get('/user/{name}', function (Request $request, Response $response, array $args) {
     $summonerData=getSummonerDataByName($args['name']);
     $apiKey=$_ENV['RIOT_API_KEY'];
     $ranked_url = "https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/".$summonerData["id"]."?api_key=".$apiKey;
