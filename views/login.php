@@ -7,17 +7,22 @@
     <link rel="stylesheet" href="/styles/login.css">
 </head>
 <body>
-    <main>
-        <section class="login-form-container">
-            <p class="error"></p>
-            <h2>Se connecter</h2>
-            <form id="login-form">
-                <label for="username">Nom d'utilisateur</label>
-                <input type="text" name="username" id="username">
-                <label for="password">Mot de passe</label>
-                <input type="password" name="password" id="password">
-                <input type="submit" value="Connexion" id="login-button">
-            </form>
+    <main class="login-container">
+        <span id="oggg-title">OG.GG</span>
+        <div class="login-container--bg">
+
+        </div>
+        <section class="login-container--section">
+            <div class="login-container--wrapper">
+                <h2>Se connecter</h2>
+                <p>Pas encore de compte ? <a href="/register">S'inscrire</a></p>
+                <p class="error"></p>
+                <form id="login-container--form">
+                    <input type="email" name="email" id="email" placeholder="Adresse email">
+                    <input type="password" name="password" id="password" placeholder="Mot de passe">
+                    <button id="loginbtn" type="submit">Connexion</button>
+                </form>
+            </div>
         </section>
     </main>
     <script src="/scripts/login.js"></script>

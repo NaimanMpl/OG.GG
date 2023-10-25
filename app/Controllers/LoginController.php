@@ -17,14 +17,12 @@ class LoginController extends Controller {
     }
 
     public function login(Request $request, Response $response) {
-        $HTTP_STATUS_CODE = 200;
+        $HTTP_STATUS_CODE = 301;
         $db = new Database();
         $con = $db->connect();
         $userInput = json_decode($request->getBody(), true);
-        $query = "SELECT password FROM users WHERE username='".$userInput['username']."'";
-        $user = $con->query($query)->fetch();
 
-        if (!isset($userInput["username"]) || !isset($userInput["password"]) || empty($userInput["username"]) || empty($userInput["password"])) {
+        if (!isset($userInput["email"]) || !isset($userInput["password"]) || empty($userInput["email"]) || empty($userInput["password"])) {
             $HTTP_STATUS_CODE = 400;
             $response->getBody()->write(json_encode(["error" => "Identifiant ou mot de passe incorrect."]));
             return ($response
@@ -32,8 +30,13 @@ class LoginController extends Controller {
                 ->withHeader('Content-Type', 'application/json')
             );
         }
-        
-        if (!password_verify($userInput["password"], $user["password"])) {
+
+        $query = "SELECT * FROM users WHERE email=?";
+        $stmt = $con->prepare($query);
+        $stmt->execute(array($userInput['email']));
+        $user = $stmt->fetch();
+
+        if (!$user || !password_verify($userInput["password"], $user["password"])) {
             $HTTP_STATUS_CODE = 401;
             $response->getBody()->write(json_encode(["error" => "Identifiant ou mot de passe incorrect."]));
             return ($response
@@ -43,9 +46,11 @@ class LoginController extends Controller {
         }
 
         $response->getBody()->write(json_encode(["success" => true]));
+        session_start();
+        $_SESSION["username"] = $user["username"];
         return ($response
             ->withStatus($HTTP_STATUS_CODE)
-            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Location', '/')
         );
     }
 

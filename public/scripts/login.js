@@ -1,14 +1,14 @@
-const loginForm = document.getElementById('login-form');
-const loginButton = document.getElementById('login-button');
+const loginForm = document.getElementById('login-container--form');
+const loginButton = document.getElementById('loginbtn');
 
 const handleLogin = async (e) => {
     e.preventDefault();
 
-    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
 
     const response = await fetch(
-        'http://localhost:8888/login',
+        'http://localhost:8888/user/login',
         {
             method: 'POST',
             headers: {
@@ -16,14 +16,19 @@ const handleLogin = async (e) => {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                username: usernameInput.value,
+                email: emailInput.value,
                 password: passwordInput.value
             })
         }
     );
-
     
+    if (response.status === 401) {
+        const responseData = await response.json();
+        document.querySelector('.error').textContent = responseData.error;
+        return;
+    }
 
+    window.location.href = response.url;
 }
 
 loginForm.addEventListener('submit', handleLogin);

@@ -1,0 +1,30 @@
+body {
+    background: var(--dark-bg);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+h1::after {
+    content: ".";
+    color: var(--primary-color);
+}
+
+main p {
+    font-size: 1.2rem;
+}
+
+main span {
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+main span a {
+    font-weight: 500;
+    color: var(--primary-color);
+}

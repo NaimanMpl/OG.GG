@@ -79,7 +79,7 @@ class RegisterController extends Controller {
         }
 
         try {
-            $this->signup($userData['email'], $userData['username'], $userData['password']);
+            $this->signup(strtolower($userData['email']), $userData['username'], $userData['password']);
             $response->getBody()->write(json_encode(["success" => true]));
         } catch (Exception $e) {
             $HTTP_STATUS_CODE = 500;
