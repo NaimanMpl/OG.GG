@@ -6,29 +6,8 @@
             <li><a href="#">Chat</a></li>
         </ul>
         <div class="nav--cta">
-            <div class="nav--search-container">
-                <img src="/img/search.svg" alt="Rechercher">
-                <input type="search" name="search" placeholder="Rechercher un joueur" id="nav--cta--search">
-            </div>
-            <?php
-            if (isset($_SESSION["username"]) && !empty($_SESSION["username"])) {
-                echo '
-                    <a class="nav--cta-desktop-login loggedin" href="/account">
-                        <img src="/img/account-icon.svg" alt="Compte">
-                        '.$_SESSION["username"].'
-                    </a>
-                ';
-            } else {
-                echo '
-                    <a class="nav--cta-desktop-login not-loggedin" href="/login">
-                        <img src="/img/account-logo.svg" alt="Compte">
-                        Connexion
-                    </a>
-                ';
-            }
-            ?>
-            
-            <img src="/img/hamburger-menu.png" alt="Menu" class="nav--cta-mobile-burger">
+            <img src="/img/search.svg" alt="Rechercher" class="nav--cta-search nav-cta--icon">
+            <img src="/img/hamburger-menu.svg" alt="Menu" class="nav--cta-mobile-burger nav-cta--icon">
         </div>
         <div class="nav--mobile-link-container hidden">
             <img src="/img/close.svg" alt="Fermer" id="closenav-btn">
