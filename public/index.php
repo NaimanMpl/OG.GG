@@ -38,39 +38,14 @@ $app->post('/user/login', LoginController::class . ":login");
 $app->get('/register', RegisterController::class . ":render");
 $app->post('/user/register', RegisterController::class . ":register");
 
-$app->get('/matchHistory/save/{matchId}', ChampionController::class . ":update");
+$app->get('/matchHistory/register/{matchId}', ChampionController::class . ":update");
 
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
-$app->get('/test/{summonerName}', SummonerController::class . ":getSummoner");
+$app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
+$app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
+$app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
 
-function getMostPlayedChamp(String $puuid){
-    $apiKey=$_ENV['RIOT_API_KEY'];
-    $apiLink="https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/".$puuid."/ids?start=0&count=5&api_key=".$apiKey;
-    $matchHistoryContent=file_get_contents($apiLink);
-    $matchesId=json_decode($matchHistoryContent,true);
-    $championCount=array();
-    $mostPlayedChamp=array("id"=>NULL,"count"=>0);
-    for($i=0;$i<count($matchesId);$i++){
-        $matchData=getMatchDataById($matchesId[$i]);
-        for($j=0;$j<count($matchData["info"]["participants"]);$j++){
-            if($matchData["info"]["participants"][$j]["puuid"]==$puuid){
-                $championId=$matchData["info"]["participants"][$j]["championId"];
-                if(isset($championCount[$championId])){
-                    $championCount[$championId]++;
-                }
-                else{
-                    $championCount[$championId]=1;
-                }
-                if($mostPlayedChamp["count"]<$championCount[$championId]){
-                    $mostPlayedChamp["id"]=$championId;
-                    $mostPlayedChamp["count"]=$championCount[$championId];
-                }
-            }
-        }
-    }
-    return $mostPlayedChamp["id"];
-}
 function getSummonerDataByName(String $name){
     $encodedName=urlencode($name);
     $apiKey= $_ENV['RIOT_API_KEY'];
@@ -100,7 +75,7 @@ function FilterMatchInfos(String $id,String $playerPuuid){
 
 }
 $app->get('/matchHistory/{name}', function (Request $request, Response $response, array $args){
-    $match_count=1;
+    $match_count=5;
     $summonerData=getSummonerDataByName($args['name']);
     $matchHistoryIds=getMatchHistoryByPuuid($summonerData['puuid'],0,$match_count);
     $MatchHistory=array();
@@ -116,32 +91,6 @@ $app->get('/matchHistory/{name}', function (Request $request, Response $response
 $app->get('/summoner/{name}', function (Request $request, Response $response, array $args) {
     $renderer = new PhpRenderer('../views');
     return $renderer->render($response, 'summoner-page.php');
-});
-$app->get('/user/{name}', function (Request $request, Response $response, array $args) {
-    $summonerData=getSummonerDataByName($args['name']);
-    $apiKey=$_ENV['RIOT_API_KEY'];
-    $ranked_url = "https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/".$summonerData["id"]."?api_key=".$apiKey;
-    $res2=file_get_contents($ranked_url);
-    $rankedData=json_decode($res2,true);
-    $rankedData["queues"]=null;
-    if(isset($rankedData[0]["tier"])){
-    $summonerData["queues"]["soloQRank"]["tier"]=$rankedData[0]["tier"];
-    $summonerData["queues"]["soloQRank"]["rank"]=$rankedData[0]["rank"];
-    $summonerData["queues"]["soloQRank"]["leaguePoints"]=$rankedData[0]["leaguePoints"];
-    $summonerData["queues"]["soloQRank"]["wins"]=$rankedData[0]["wins"];
-    $summonerData["queues"]["soloQRank"]["losses"]=$rankedData[0]["losses"];
-    }
-    if(isset($rankedData[1]["tier"])){
-        $summonerData["queues"]["flexQRank"]["tier"]=$rankedData[1]["tier"];
-        $summonerData["queues"]["flexQRank"]["rank"]=$rankedData[1]["rank"];
-        $summonerData["queues"]["flexQRank"]["leaguePoints"]=$rankedData[1]["leaguePoints"];
-        $summonerData["queues"]["flexQRank"]["wins"]=$rankedData[1]["wins"];
-        $summonerData["queues"]["flexQRank"]["losses"]=$rankedData[1]["losses"];
-        }
-    $summonerData["mostPlayedChamp"]=getMostPlayedChamp($summonerData["puuid"]);
-    $jsonsumdata=json_encode($summonerData);
-    $response->getBody()->write($jsonsumdata);
-    return $response->withHeader("Content-Type","application/json")->withStatus(200);
 });
 
 $app->run();

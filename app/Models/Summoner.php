@@ -12,6 +12,7 @@ class Summoner {
     private string $puuid;
     private string $id;
     private int $level;
+    private int $profileIconId;
     private array $matchesId;
     private ?Queue $soloQueue = null;
     private ?Queue $flexQueue = null;
@@ -34,6 +35,7 @@ class Summoner {
         $this->puuid = $summonerData['puuid'];
         $this->id = $summonerData['id'];
         $this->level = $summonerData['summonerLevel'];
+        $this->profileIconId = $summonerData['profileIconId'];
     }
 
     public function fetchMatchHistoryData(int $start, int $count) {
@@ -64,6 +66,10 @@ class Summoner {
         }
     }
 
+    public function getProfileIconId() : int {
+        return $this->profileIconId;
+    }
+
     public function getName(): string {
         return $this->name;
     }
@@ -88,6 +94,7 @@ class Summoner {
         return [
             'name' => $this->getName(),
             'level' => $this->getLevel(),
+            'profileIconId' => $this->getProfileIconId(),
             'queues' => [
                 "soloQueue" => $this->soloQueue === null ? null : $this->soloQueue->toArray(),
                 "flexQueue" => $this->flexQueue === null ? null : $this->flexQueue->toArray()

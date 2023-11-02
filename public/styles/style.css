@@ -16,9 +16,11 @@
 body {
     position: relative;
     background: var(--white);
+    overflow-x: hidden;
 }
 
 html, body {
+    overflow-x: hidden;
 }
 
 a {
@@ -32,9 +34,9 @@ ul {
 }
 
 #wrapper {
-    height: 100vh;
-    overflow: hidden;
     position: relative;
+    height: 100vh;
+    overflow: hidden    ;
 }
 
 #wrapper::before {
@@ -239,10 +241,6 @@ header {
     display: none;
 }
 
-.nav--search-container input {
-    display: none;
-}
-
 .follow-section {
     position: relative;
     color: var(--default-dark);
@@ -328,6 +326,7 @@ header {
 
 main svg {
     position: absolute;
+    z-index: -1;
 }
 
 .bar {
@@ -385,6 +384,7 @@ main svg {
     }
 
     #hero {
+        position: relative;
         padding: 8rem 5rem;
     }
 
@@ -406,8 +406,8 @@ main svg {
     .hero-background--wrapper {
         display: block;
         position: absolute;
-        right: -10%;
-        top: -20%;
+        top: 50%;
+        right: 30%;
         z-index: -1;
     }
 
@@ -417,14 +417,20 @@ main svg {
 
     .hero-background--text {
         position: absolute;
-        left: 2%;
-        top: 18%;
-        z-index: -1;
-        animation: text-infinite-loop 60s infinite linear;
+        top: 50%;
+        left: 50%;
+        transform-origin: 50% 50%;
+        transform: translate(-50%, -50%);
+        animation: text-infinite-loop 50s infinite linear;
+        max-width: 50vw;
     }
 
     .hero-background {
-        max-width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-40%, -50%);
+        max-width: 60vw;
     }
 
     nav {
@@ -458,20 +464,6 @@ main svg {
         color: var(--white);
         padding: .5rem 1rem;
         border-radius: .6rem;
-    }
-
-    .nav--search-container input::placeholder {
-        color: var(--white);
-        font-weight: 600;
-    }
-
-    .nav--search-container input {
-        display: block;
-        background: transparent;
-        color: var(--white);
-        border: none;
-        outline: none;
-        font-weight: 600;
     }
 
     .nav--cta-desktop-login {
@@ -631,10 +623,10 @@ main svg {
 }
 
 @keyframes text-infinite-loop {
-    0% {
-        transform: rotate(0);
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(0);
     }
-    100% {
-        transform: rotate(360deg);
+    50% {
+        transform: translate(-50%, -50%) rotate(360deg);
     }
 }
