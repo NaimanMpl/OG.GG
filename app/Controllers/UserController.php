@@ -10,7 +10,7 @@ class UserController {
 
     public function getUserByEmail(Request $request, Response $response) {
         $database = new Database();
-        $con = $database->connect();
+        $con = $database->getConnection();
         $query = "SELECT email FROM users WHERE email=?";
         $stmt = $con->prepare($query);
         $stmt->execute(array(strtolower(urldecode($request->getQueryParams()['email']))));

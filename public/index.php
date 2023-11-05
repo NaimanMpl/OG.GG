@@ -38,13 +38,14 @@ $app->post('/user/login', LoginController::class . ":login");
 $app->get('/register', RegisterController::class . ":render");
 $app->post('/user/register', RegisterController::class . ":register");
 
-$app->get('/matchHistory/register/{matchId}', ChampionController::class . ":update");
 
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
 $app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
+$app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
+$app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":updateLeaderboard");
 
 function getSummonerDataByName(String $name){
     $encodedName=urlencode($name);
