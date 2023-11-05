@@ -11,7 +11,7 @@ const handleRegister = async (e) => {
     registerBtn.classList.add('loading');
 
     const response = await fetch(
-        'http://localhost:8888/user/register',
+        '/user/register',
         {
             method: 'POST',
             headers: {
@@ -50,7 +50,7 @@ const updateEmailDialog = async (e) => {
         return;
     }
     const response = await fetch(
-        `http://localhost:8888/users/by-email?email=${encodeURIComponent(e.target.value)}`,
+        `/users/by-email?email=${encodeURIComponent(e.target.value)}`,
         {
             method: 'GET',
             headers: {
@@ -80,7 +80,7 @@ const updateUsernameDialog = async (e) => {
         return;
     }
     const response = await fetch(
-        `http://localhost:8888/users/by-name/${encodeURIComponent(e.target.value)}`,
+        `/users/by-name/${encodeURIComponent(e.target.value)}`,
         {
             method: 'GET',
             headers: {

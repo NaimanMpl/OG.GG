@@ -8,7 +8,7 @@ const handleLogin = async (e) => {
     const passwordInput = document.getElementById('password');
 
     const response = await fetch(
-        'http://localhost:8888/user/login',
+        '/user/login',
         {
             method: 'POST',
             headers: {
