@@ -5,6 +5,8 @@
     --primary-color: #FF4747;
     --dark-bg: #141213;
     --default-dark: #222222;
+    --mobile-padding: 1.5rem 2rem;
+    --desktop-padding: 4rem 5rem;
 }
 
 * {

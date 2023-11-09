@@ -12,7 +12,10 @@
     z-index: 999;
     width: calc(100% - 4rem);
     padding: 0 2rem;
-    height: 100%;
+}
+
+#blur-wrapper {
+    min-height: 100vh;
 }
 
 #blur-wrapper.blur > * {

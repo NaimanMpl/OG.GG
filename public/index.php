@@ -46,53 +46,9 @@ $app->get('/summoners/register/{summonerName}', SummonerController::class . ":re
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
 $app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
 $app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":updateLeaderboard");
-
-function getSummonerDataByName(String $name){
-    $encodedName=urlencode($name);
-    $apiKey= $_ENV['RIOT_API_KEY'];
-    $summonerApiLink="https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/".$encodedName."?api_key=".$apiKey;
-    $summonerApiContents=file_get_contents($summonerApiLink);
-    return json_decode($summonerApiContents,true);
-}
-function getMatchHistoryByPuuid(String $puuid,int $start,int $count){
-    $apiKey=$_ENV['RIOT_API_KEY'];
-    $matchHistoryApiLink="https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/".$puuid."/ids?start=".$start."&count=".$count."&api_key=".$apiKey;
-    $matchHistoryContents=file_get_contents($matchHistoryApiLink);
-    return json_decode($matchHistoryContents,true);
-}
-function getMatchDataById(String $id){
-    $apiKey=$_ENV['RIOT_API_KEY'];
-    $matchApiLink="https://europe.api.riotgames.com/lol/match/v5/matches/".$id."?api_key=".$apiKey;
-    $matchContents=file_get_contents($matchApiLink);
-    return json_decode($matchContents,true);
-}
-function FilterMatchInfos(String $id,String $playerPuuid){
-    $matchData=getMatchDataById($id);
-    $res=array();
-    $res['matchInfos']['duration']['minutes']=floor($matchData['info']['gameDuration']/60);
-    $res['matchInfos']['duration']['seconds']=$matchData['info']['gameDuration']%60;
-    return $res;
-
-
-}
-$app->get('/matchHistory/{name}', function (Request $request, Response $response, array $args){
-    $match_count=5;
-    $summonerData=getSummonerDataByName($args['name']);
-    $matchHistoryIds=getMatchHistoryByPuuid($summonerData['puuid'],0,$match_count);
-    $MatchHistory=array();
-    for($i=0;$i<count($matchHistoryIds);$i++){
-        array_push($MatchHistory,FilterMatchInfos($matchHistoryIds[$i],$summonerData['puuid']));
-    }
-    $MatchHistoryJson=json_encode($MatchHistory);
-    $response->getBody()->write($MatchHistoryJson);
-    return $response->withHeader("Content-Type","application/json")->withStatus(200);
-
-});
-
-$app->get('/summoner/{name}', function (Request $request, Response $response, array $args) {
-    $renderer = new PhpRenderer('../views');
-    return $renderer->render($response, 'summoner-page.php');
-});
+$app->get('/summoner/{name}', SummonerController::class . ":render");
+$app->get('/leaderboard', ChampionController::class . ":render");
+$app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
 
 $app->run();
 ?>
