@@ -1,156 +1,157 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter';
+main, .ranked-cards--container {
+    padding: var(--mobile-padding);
 }
 
-body {
-    background-color: #141213;
-    color: #FFFFFF;
-}
-
-.hessgg {
-    font-size: 4vmin;
-    text-decoration: none;
-    color: #FFFFFF;
-}
-
-.nav-pages nav ul {
+.profilCard--playerDataCard-container {
     display: flex;
-    gap : 1rem;
-    list-style: none;
-    font-size: 2.5vmin;
-}
-
-.nav-pages {
-    display: flex;
-    align-items: center;
-    gap : 1.5rem;
-}
-
-header {
-    display: flex;
-    justify-content:space-between;
-    padding-left: 10vmin;
-    padding-right: 10vmin;
-    padding-top: 4.5vmin;
-    padding-bottom: 4.5vmin;
-    position: sticky;
-}
-
-section {
-    padding-top: 25vmin;
-    padding-bottom: 28vmin;
-    display: flex;
-    align-items: center;
-    gap: 2vmin;
-}
-
-h1 {
-    font-size: 7vmin;
-}
-
-.wrapper-banner{
-    position: relative;
-}
-
-.wrapper-banner::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('/viego-banner.jpeg');
-    background-position: center;
-    background-size: cover;
-    z-index: -1;
-    filter: brightness(50%);
-}
-
-.wrapper-banner section{
-    padding-left: 30vmin;
-}
-
-img {
-    width: 15vmin;
-    height: 15vmin;
-    border-radius: 50%;
-}
-
-#title span {
-    font-size: 1.5vmin;
-    border: 1px solid #FFFFFF;
-    border-radius: 0.5vmin;
-    padding-left: 1.75vmin;
-    padding-right: 1.75vmin;
-    padding-top: .25vmin;
-    padding-bottom: .25vmin;
-    text-align: center;
-    font-weight: bold;
-}
-
-.player-research {
-    display: flex;
-    align-items: center;
     flex-direction: row;
-    background-color: #2E2E2E;
-    border-radius: 0.5vmin;
+    gap: 2rem;
 }
 
-.search_icon {
-    height: 2vmin;
-    padding: 1vmin;
-    fill: #9D9D9D;
+.profilCard--playerInfos-container {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
 }
 
-input[type="text"] {
-    background-color: transparent;
-    color: #FFFFFF;
-    outline: none;
-    width: 21vmin;
-    border: 0;
-    padding: 1vmin;
-    font-size: 2vmin;
+.profilCard--pseudoServer-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
 }
 
-input[type="text"]::placeholder {
-    color: #9D9D9D;
-}
-
-input[type="button"] {
-    color: #FFFFFF;
-    background-color: #FF4747;
-    padding: 0.75vmin 4vmin;
-    border: 0;
-    border-radius: 15px;
-    font-weight: bold;
-    transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-}
-
-input[type="button"]:hover{
-    transform: scale(1.05);
-}
-
-input[type="button"]:active {
-    transform: scale(0.94);
-    transition: all 0.25s;
-}
-
-.level {
-    color: #000000;
+.profilCard--loading {
     text-align: center;
-    margin-top: -2vmin;
-    z-index: -2;
-    border-radius: 0.5vmin;
+    font-size: 1.5rem;
 }
 
-.level span {
-    padding: 0;
-    background-color: #FFFFFF;
-    font-weight: bold;
-    padding: 0.25vmin 0.5vmin 0.25vmin 0.5vmin;
+.profilCard--icon {
+    max-width: 6.75rem;
+}
+
+.profilCard--pseudo {
+    font-weight: 600;
+    font-size: 2rem;
+    max-width: fit-content;
+}
+
+.profilCard--server {
+    background-color: #222222;
+    color: #F4F4F4;
+    padding: .35rem .75rem;
+    border-radius: 10%;
+    font-size: medium;
+    font-weight: 500;
+}
+
+.profilCard--level {
+    font-weight: 500;
+}
+
+.profilCard--followBtn {
+    color: #F4F4F4;
+    background: #222222;
+    margin-top: 2rem;
+    padding: .5rem;
+    border-radius: .3rem;
+    border: none;
+    font-weight: 600;
+}
+
+.profilCard--cardFollow-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.scroll-titles--container {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.scrolling-titles--soloQ-container{
+    display: inline-block;
+    white-space: nowrap;
+    animation: soloQ 20s infinite linear;
+    overflow: hidden;
+}
+
+.scrolling-titles--soloQ-container span {
+    padding-right: .4rem;
+    font-size: 8vw;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.scrolling-titles--flexQ-container {
+    display: inline-block;
+    white-space: nowrap;
+    animation: flexQ 20s infinite linear;
+    overflow: hidden;
+}
+
+.scrolling-titles--flexQ-container span {
+    padding-right: .4rem;
+    font-size: 8vw;
+    display: inline-block;
+}
+
+@keyframes soloQ {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes flexQ {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.ranked-cards--container {
+    display: flex;
+    flex-direction: column;
+    font-weight: 650;
+}
+
+.ranked-card--data {
+    align-items: center;
+    display: grid;
+    width: 100%;
+}
+
+.ranked-card--rank-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.ranked-card--data-container {
+    display: flex;
+    gap: 2rem;
+    padding-top: .5rem;
+    padding-bottom: 1.5rem;
+}
+
+.ranked-card--rank-lp-container {
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
+}
+
+.ranked-card--bar-unfilled {
+    background: #C2C2C2;
+    width: 100%;
+    height: .14rem;
+    border-radius: .8rem;
+}
+
+.ranked-card--winrate-container {
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
 }
