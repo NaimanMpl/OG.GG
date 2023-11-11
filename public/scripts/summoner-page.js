@@ -303,4 +303,20 @@ const fetchSummonerData = async () => {
     rankCardContainer.appendChild(summonerRankedCards[1]);
 }
 
+const registerSummoner = async () => {
+    const summonerName = window.location.href.split("/").slice(-1);
+    
+    await fetch(
+        `/summoners/register/${summonerName}`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            }
+        }
+    );
+}
+
 fetchSummonerData();
+registerSummoner();
