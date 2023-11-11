@@ -37,7 +37,7 @@ $app->get('/logout', UserController::class . ":logout");
 $app->post('/user/login', LoginController::class . ":login");
 
 $app->get('/register', RegisterController::class . ":render");
-$app->post('/user/register', RegisterController::class . ":register");
+$app->post('/user/register', UserController::class . ":register");
 
 
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");

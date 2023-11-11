@@ -21,6 +21,6 @@ const addWord = (text, index) => followDescContainer.appendChild(createWord(text
 
 const createSubtitle = text => text.split(' ').map(addWord);
 
-hiddenElements.forEach((element) => observer.observe(element));
-
 createSubtitle("J'adore jouer Kai'Sa tellement que ça fait 2 saisons que je suis stuck Gold IV .");
+
+hiddenElements.forEach((element) => observer.observe(element));

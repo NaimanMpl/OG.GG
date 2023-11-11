@@ -33,6 +33,7 @@ html, body {
 }
 
 body {
+    overflow: hidden;
     background-color: #FFFFFF;
     color: var(--default-dark);
     overflow-x: hidden;
@@ -45,7 +46,6 @@ a {
 }
 
 main {
-    max-height: 100vh;
     padding: 5rem 3rem;
 }
 
@@ -179,7 +179,7 @@ svg, img {
         align-items: center;
         justify-content: center;
         height: 100vh;
-        background: var(--white);
+        overflow: hidden;
     }
 
     main {

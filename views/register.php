@@ -17,8 +17,8 @@
             <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--username-dialog"></p>
             <input type="password" name="password" id="password" placeholder="Mot de passe">
             <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--password-dialog"></p>
-            <input type="confirm-password" name="confirm-password" id="confirm-password" placeholder="Confirmer le mot de passe">
-            <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--password-dialog"></p>
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirmer le mot de passe">
+            <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--confirm-password-dialog"></p>
             <button id="registerbtn" type="submit">
                 <span class="registerbtn--text">S'inscrire</span>
             </button>

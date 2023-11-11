@@ -252,14 +252,11 @@ header {
 }
 
 .hidden-section {
-    opacity: 0;
     transition: opacity 1s ease, transform 1s ease;
-    transform: translateY(50px);
 }
 
 .show {
     transform: translateY(0px);
-    opacity: 1;
 }
 
 .visible {

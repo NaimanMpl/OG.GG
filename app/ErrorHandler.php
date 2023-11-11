@@ -30,6 +30,17 @@ class ErrorHandler {
         );
     }
 
+    public static function sendError(Response $response, int $httpCode, string $message) {
+
+        $response->getBody()->write(json_encode(["error" => $message]));
+
+        return (
+            $response
+                ->withStatus($httpCode)
+                ->withHeader("Content-Type", "application/json")
+        );
+    }
+
 }
 
 ?>
