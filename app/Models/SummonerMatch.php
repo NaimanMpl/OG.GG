@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Exceptions\DatabaseException;
 use App\Models\Database;
-use Exception;
+use PDOException;
 
 class SummonerMatch {
 
@@ -18,6 +19,8 @@ class SummonerMatch {
         $summoners = $matchData["info"]["participants"];
         foreach ($summoners as $summoner) {
             $this->participants[] = [
+                "summonerId" => $summoner["summonerId"],
+                "puuid" => $summoner["puuid"],
                 "championName" => $summoner["championName"],
                 "championId" => $summoner["championId"],
                 "win" => $summoner["win"]
@@ -26,24 +29,12 @@ class SummonerMatch {
 
     }
 
-    public function save(Database $database) {
-        try {
-            $con = $database->connect();
-            foreach ($this->participants as $participant) {
-                $win = $participant["win"] ? 1 : 0;
-                $query = "INSERT INTO champions_matchs(champion_id, champion_name, match_id, win) VALUES (?, ?, ?, ?)";
-                $stmt = $con->prepare($query);
-                $stmt->execute(array(
-                    $participant["championId"], 
-                    $participant["championName"], 
-                    $this->matchId,
-                    $win,
-                ));
-            }
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            throw new Exception("La connexion à la base de donnée échouée.");
-        }
+    public function getMatchId(): string {
+        return $this->matchId;
+    }
+
+    public function getParticipants(): array {
+        return $this->participants;
     }
 
 }

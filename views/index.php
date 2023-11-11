@@ -53,7 +53,7 @@ session_start();
                         <h2 class="follow-section--title">Moi c'est ZelphiiX</h2>
                         <div class="follow-section--desc">
                         </div>
-                        <a class="follow-section--show-profile cta-btn" href="#">
+                        <a class="follow-section--show-profile cta-btn" href="/summoner/ZelphiiX">
                             <span>Voir mon profil</span>
                         </a>
                     </div>
@@ -82,5 +82,6 @@ session_start();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <script src="/scripts/script.js"></script>
     <script src="/scripts/search.js"></script>
+    <script src="/scripts/nav.js"></script>
 </body>
 </html>

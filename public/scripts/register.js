@@ -2,11 +2,23 @@ const registerForm = document.getElementById('register-container--form');
 const registerBtn = document.getElementById('registerbtn');
 const usernameInput = document.getElementById("username");
 const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirm-password');
+
+const validateEmail = (email) => {
+    return email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+}
+
+const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+    return passwordRegex.test(password);
+}
 
 const handleRegister = async (e) => {
     e.preventDefault();
 
-    const passwordInput = document.getElementById("password");
+    if (confirmPasswordInput.value !== passwordInput.value || !validatePassword(passwordInput.value)) return;
+    if (!validateEmail(emailInput.value)) return;
 
     registerBtn.classList.add('loading');
 
@@ -21,34 +33,39 @@ const handleRegister = async (e) => {
             body: JSON.stringify({
                 email: emailInput.value, 
                 username: usernameInput.value, 
-                password: passwordInput.value
+                password: passwordInput.value,
+                confirmPassword: confirmPasswordInput.value
             })
         }
     );
-    const data = await response.json();
     
-    registerBtn.classList.remove("loading");
-
-    const errorMessage = document.querySelector('.error');
-
-    if ([400, 500].includes(response.status)) {
+    if (!response.ok) {
+        const errorMessage = document.querySelector('.error');
+        const data = await response.json();
         errorMessage.textContent = data.error;
         errorMessage.className = 'error';
+        registerBtn.classList.remove("loading");
         return;
     }
 
-    if (data.success) {
-        errorMessage.textContent = "Inscription finalisée avec succès";
-        errorMessage.className = 'success';
-    }
+    registerBtn.classList.remove("loading");
+    
+    window.location.href = "/login";
 }
 
 const updateEmailDialog = async (e) => {
     const emailDialog = document.querySelector('.register-container--email-dialog');
+    
     if (e.target.value.length === 0) {
         emailDialog.textContent = "";
         return;
     }
+
+    if (!validateEmail(e.target.value)) {
+        emailDialog.textContent = "Veuillez renseigner une adresse mail valide !";
+        return;
+    }
+
     const response = await fetch(
         `/users/by-email?email=${encodeURIComponent(e.target.value)}`,
         {
@@ -59,7 +76,9 @@ const updateEmailDialog = async (e) => {
             },
         }
     );
+
     const responseData = await response.json();
+    
     if (responseData.length === 0) {
         emailDialog.classList.remove('dialog-error');
         emailDialog.classList.add('dialog-success');
@@ -103,6 +122,46 @@ const updateUsernameDialog = async (e) => {
     }
 }
 
+const updateConfirmPasswordDialog = (input) => {
+    const confirmPasswordDialog = document.querySelector('.register-container--confirm-password-dialog');
+    if (input.value.length === 0) {
+        confirmPasswordDialog.textContent = "";
+        return;
+    }
+
+    if (confirmPasswordInput.value !== passwordInput.value) {
+        confirmPasswordDialog.textContent = "Les 2 mots de passes doivent être identiques !";
+        return;
+    }
+
+    confirmPasswordDialog.textContent = "Super ! Les mots de passes sont identiques !";
+}
+
+const updatePasswordDialog = (e) => {
+
+    const passwordDialog = document.querySelector('.register-container--password-dialog');
+
+    if (e.target.value.length === 0) {
+        passwordDialog.textContent = "";
+        return;
+    }
+
+    if (!validatePassword(e.target.value)) {
+        passwordDialog.textContent = "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial !";
+        return;
+    }
+
+    passwordDialog.textContent = "C'est carré";
+}
+
 usernameInput.addEventListener('input', updateUsernameDialog);
 emailInput.addEventListener('input', updateEmailDialog);
+passwordInput.addEventListener('input', updatePasswordDialog);
+passwordInput.addEventListener('input', () => {
+    updateConfirmPasswordDialog(passwordInput);
+});
+confirmPasswordInput.addEventListener('input', () => {
+    updateConfirmPasswordDialog(confirmPasswordInput);
+});
+
 registerForm.addEventListener('submit', handleRegister);

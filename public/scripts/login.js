@@ -22,13 +22,13 @@ const handleLogin = async (e) => {
         }
     );
     
-    if (response.status === 401) {
+    if (!response.ok) {
         const responseData = await response.json();
         document.querySelector('.error').textContent = responseData.error;
         return;
     }
 
-    window.location.href = response.url;
+    window.location.href = "/";
 }
 
 loginForm.addEventListener('submit', handleLogin);

@@ -5,6 +5,10 @@
     --primary-color: #FF4747;
     --dark-bg: #141213;
     --default-dark: #222222;
+    --light-gray: #C2C2C2;
+    --dark-gray: #727272;
+    --mobile-padding: 1.5rem 2rem;
+    --desktop-padding: 4rem 5rem;
 }
 
 * {
@@ -155,20 +159,33 @@ header {
 }
 
 .nav--mobile-link-container {
+    color: var(--white);
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    overflow: hidden;
     padding: 5rem 2.5rem;
     background-color: var(--default-dark);
-    transition: .5s all ease;
+    transition: all .5s ease;
+    z-index: 999;
+}
+
+.nav-profile-cta--logout {
+    margin-top: 100px;
+    color: var(--primary-color);
+    position: absolute;
+    bottom: 14rem;
+    left: 50%;
+    transform: translateX(calc(-50% - 2.5rem));
 }
 
 .nav--mobile-link-container ul {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-top: 3rem;
 }
 
 .nav--mobile-link-container ul li {
@@ -176,14 +193,31 @@ header {
 }
 
 .nav--mobile-link-container img {
+    cursor: pointer;
+}
+
+.nav-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 5rem);
+}
+
+.nav-profile--infos {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-profile--email { 
+    color: #C2C2C2;
+}
+
+.nav-profile--settings {
     background: linear-gradient(rgba(238, 238, 238, 0.1), rgba(238, 238, 238, 0.1));
     border-radius: .5rem;
     padding: .7rem;
-    position: absolute;
     max-width: 1.2rem;
-    right: 25vmin;
-    top: 7vmin;
-    cursor: pointer;
 }
 
 .nav--cta-search {
@@ -218,14 +252,11 @@ header {
 }
 
 .hidden-section {
-    opacity: 0;
     transition: opacity 1s ease, transform 1s ease;
-    transform: translateY(50px);
 }
 
 .show {
     transform: translateY(0px);
-    opacity: 1;
 }
 
 .visible {
@@ -376,6 +407,10 @@ main svg {
     transform: translateY(-20px);
 }
 
+.nav-profile-icon {
+    max-width: 55px;
+}
+
 @media only screen and (min-width: 1024px) {
     header {
         padding: 1.5rem 5rem;
@@ -455,6 +490,31 @@ main svg {
 
     .nav--cta-desktop-login {
         display: block;
+    }
+
+    .nav--mobile-link-container {
+        width: 350px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: auto;
+        transition: all .5s ease;
+    }
+
+    .hidden {
+        left: 100%;
+    }
+
+    .nav-profile {
+        width: 100%;
+    }
+
+    .nav-profile-cta--logout {
+        transform: translateX(-50%);
+    }
+
+    .nav--mobile-link-container ul li {
+        font-size: 1.2rem;
     }
     
     .nav--search-container {

@@ -1,0 +1,11 @@
+.header--title {
+    color: var(--default-dark);
+}
+
+.nav-cta--icon {
+    background: var(--default-dark);
+}
+
+.nav--desktop-link-container li a {
+    color: var(--default-dark) !important;
+}

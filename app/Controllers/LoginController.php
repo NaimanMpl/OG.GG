@@ -19,7 +19,7 @@ class LoginController extends Controller {
     public function login(Request $request, Response $response) {
         $HTTP_STATUS_CODE = 301;
         $db = new Database();
-        $con = $db->connect();
+        $con = $db->getConnection();
         $userInput = json_decode($request->getBody(), true);
 
         if (!isset($userInput["email"]) || !isset($userInput["password"]) || empty($userInput["email"]) || empty($userInput["password"])) {
@@ -48,6 +48,7 @@ class LoginController extends Controller {
         $response->getBody()->write(json_encode(["success" => true]));
         session_start();
         $_SESSION["username"] = $user["username"];
+        $_SESSION["email"] = $user["email"];
         return ($response
             ->withStatus($HTTP_STATUS_CODE)
             ->withHeader('Location', '/')

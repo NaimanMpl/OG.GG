@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers;
+use App\ErrorHandler;
 use App\Exceptions\SummonerNotFoundException;
 use App\Models\Database;
 use PDOException;
@@ -42,7 +43,7 @@ class SummonerController extends Controller {
         try {
             $summoner = new Summoner($summonerName);
             $database = new Database();
-            $conn = $database->connect();
+            $conn = $database->getConnection();
             $query = "INSERT INTO summoners(id, puuid, name, level, profileiconid) VALUES(?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->execute(array($summoner->getId(), $summoner->getPuuid(), $summoner->getName(), $summoner->getLevel(), $summoner->getProfileIconId()));
@@ -60,21 +61,7 @@ class SummonerController extends Controller {
                     ->withHeader('Content-Type', 'application/json')
             );
         } catch (PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                $response->getBody()->write(json_encode(["error" => "Ce summoner existe déjà !"]));
-                return (
-                    $response
-                        ->withStatus(401)
-                        ->withHeader('Content-Type', 'application/json')
-                );
-            } else {
-                $response->getBody()->write(json_encode(["error" => "Impossible d'enregistrer le summoner, côté base de données."]));
-                return (
-                    $response
-                        ->withStatus(500)
-                        ->withHeader('Content-Type', 'application/json')
-                );
-            }
+            return ErrorHandler::handleDatabaseError($e, $response, 401, "Ce summoner existe déjà !");
         }
     }
 
@@ -82,7 +69,7 @@ class SummonerController extends Controller {
         $summonerName = $args['summonerName'] . "%";
         try {
             $database = new Database();
-            $conn = $database->connect();
+            $conn = $database->getConnection();
             $query = "SELECT name, profileIconId FROM summoners WHERE name LIKE ?";
             $stmt = $conn->prepare($query);
             $stmt->execute(array($summonerName));
