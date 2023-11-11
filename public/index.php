@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Controllers\MatchController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -50,6 +51,7 @@ $app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":u
 $app->get('/summoner/{name}', SummonerController::class . ":render");
 $app->get('/leaderboard', ChampionController::class . ":render");
 $app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
+$app->get('/matchs/{matchId}', MatchController::class . ':getMatch');
 
 $app->run();
 ?>
