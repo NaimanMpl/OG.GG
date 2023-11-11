@@ -146,7 +146,11 @@ const buildRankedCards = (rankSoloQ, rankFlexQ) => {
 }
 
 const winrateValue = (wins, losses) => {
-    let winrate = ((wins / (wins + losses)) * 100).toFixed(2);
+    let winrate = 0;
+    if (wins == 0 && losses == 0){
+        return winrate;
+    } 
+    winrate = ((wins / (wins + losses)) * 100).toFixed(2);
     return winrate;
 }
 
@@ -195,7 +199,7 @@ const buildRankedCard = (queue) => {
     }
     rankBarFilled.style.backgroundColor = '#222222';
     rankBarFilled.style.height = '.125rem';
-    rankBarFilled.style.borderRadius = '2%';
+    rankBarFilled.style.borderRadius = '.8rem';
 
     rankBarUnfilled.appendChild(rankBarFilled);
 
