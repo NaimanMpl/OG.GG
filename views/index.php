@@ -53,7 +53,7 @@ session_start();
                         <h2 class="follow-section--title">Moi c'est ZelphiiX</h2>
                         <div class="follow-section--desc">
                         </div>
-                        <a class="follow-section--show-profile cta-btn" href="#">
+                        <a class="follow-section--show-profile cta-btn" href="/summoner/ZelphiiX">
                             <span>Voir mon profil</span>
                         </a>
                     </div>

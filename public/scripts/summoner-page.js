@@ -1,12 +1,37 @@
-const profilCardContainer = document.querySelector('main');
+const profilCardContainer = document.querySelector('.profileCard--cardFollow-container');
 const scrollTitles = document.querySelector('.scroll-titles-wrapper');
 const rankCardContainer = document.querySelector('.ranked-cards--container');
 
 const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
+    
+    const summonerProfilePictureWrapper = document.createElement('div');
+    summonerProfilePictureWrapper.className = 'profileCard-cardIcon--wrapper';
     const summonerProfilPicture = document.createElement('img');
     summonerProfilPicture.className = 'profilCard--icon';
     summonerProfilPicture.src = `https://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${profilPicture}.png`;
     summonerProfilPicture.alt = 'Photo de profil du joueur';
+
+    const forms = [
+        { url : "/img/plus.svg", className: "plus" }, 
+        { url : "/img/triangle.svg", className: "triangle" },
+        { url : "/img/points.svg", className: "points" },
+        { url : "/img/points.svg", className: "points2" }
+    ];
+    forms.forEach((form) => {
+        const formImage = document.createElement('img');
+        formImage.src = form.url;
+        formImage.alt = form.className;
+        formImage.classList.add('form-img');
+        formImage.classList.add(form.className);
+
+        if (form.className !== "triangle") {
+            summonerProfilePictureWrapper.appendChild(formImage);
+        } else {
+            document.querySelector('body').appendChild(formImage);
+        }
+    });
+
+    summonerProfilePictureWrapper.appendChild(summonerProfilPicture);
 
     const pseudo = document.createElement('span');
     pseudo.className = 'profilCard--pseudo';
@@ -16,24 +41,35 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     serverName.className = 'profilCard--server';
     serverName.textContent = server.toUpperCase();
 
+    const levelContainer = document.createElement('div');
+    levelContainer.style.display = "flex";
+    levelContainer.style.gap = ".25rem"
+
+    const levelText = document.createElement('span');
+    levelText.className = 'profilCard--level';
+    levelText.textContent = `Niveau`;
+
     const level = document.createElement('span');
     level.className = 'profilCard--level';
-    level.textContent = `Niveau ${accountLevel}`;
+    level.style.fontWeight = 'bold';
+    level.textContent = `${accountLevel}`;
+
+    levelContainer.appendChild(levelText);
+    levelContainer.appendChild(level);
 
     const pseudoAndServer = document.createElement('div');
     pseudoAndServer.className = 'profilCard--pseudoServer-container';
     pseudoAndServer.appendChild(pseudo);
     pseudoAndServer.appendChild(serverName);
 
-    const playerInfos = document.createElement('div');
-    playerInfos.className = 'profilCard--playerInfos-container';
+    const playerInfos = document.querySelector('.profilCard--playerInfos-container');
     playerInfos.appendChild(pseudoAndServer);
-    playerInfos.appendChild(level);
+    playerInfos.appendChild(levelContainer);
 
     const container = document.createElement('div');
     container.className = 'profilCard--playerDataCard-container';
 
-    container.appendChild(summonerProfilPicture);
+    container.appendChild(summonerProfilePictureWrapper);
     container.appendChild(playerInfos);
 
     return container;
@@ -236,11 +272,6 @@ const buildRankedCard = (queue) => {
 
 const fetchSummonerData = async () => {
 
-    const loadingData = document.createElement('p');
-    loadingData.className = 'profilCard--loading';
-    loadingData.textContent = 'Chargement des données en cours...';
-    profilCardContainer.appendChild(loadingData);
-
     const response = await fetch(
         `/summoners/${window.location.href.split("/").slice(-1)}`,
         {
@@ -254,7 +285,8 @@ const fetchSummonerData = async () => {
 
     const summonerData = await response.json();
 
-    profilCardContainer.removeChild(loadingData);
+    document.querySelector('.spinner-container').classList.remove('spinner-visible');
+    document.querySelector('.spinner-container').classList.add('spinner-hidden');
 
     console.log(summonerData);
 

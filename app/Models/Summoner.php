@@ -25,13 +25,13 @@ class Summoner {
     }
 
     public function fetchSummonerData() {
-        $apiUrl = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/".$this->name."?api_key=".$_ENV['RIOT_API_KEY'];
+        $apiUrl = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/".urlencode($this->name)."?api_key=".$_ENV['RIOT_API_KEY'];
         $response = file_get_contents($apiUrl);
         if ($response === false) {
-            throw new SummonerNotFoundException("Le summoner ".$this->name." n'existe pas !");
+            throw new SummonerNotFoundException("Le summoner ".urldecode($this->name)." n'existe pas !");
         }
         $summonerData = json_decode($response, true);
-        $this->name = $summonerData['name'];
+        $this->name = urldecode($summonerData['name']);
         $this->puuid = $summonerData['puuid'];
         $this->id = $summonerData['id'];
         $this->level = $summonerData['summonerLevel'];

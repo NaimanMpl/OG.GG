@@ -21,7 +21,11 @@
         <?php include "header.php" ?>
         <main>
             <h1></h1>
-            
+            <div class="profileCard--cardFollow-container">
+                <div class="profilCard--playerInfos-container">
+
+                </div>
+            </div>
         </main>
         <div class="scroll-titles-wrapper">
             <div class="scroll-titles--container">
@@ -36,7 +40,11 @@
         <div class="ranked-cards--container">
 
         </div>
+        <div class="spinner-container spinner-visible">
+            <div class="spinner"></div>
+        </div>
     </div>
+    <script src="/scripts/nav.js"></script>
     <script src="/scripts/search.js"></script>
     <script src="/scripts/summoner-page.js"></script>
 </body>
