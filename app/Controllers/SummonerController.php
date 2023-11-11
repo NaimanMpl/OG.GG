@@ -6,6 +6,7 @@ use App\Controllers;
 use App\ErrorHandler;
 use App\Exceptions\SummonerNotFoundException;
 use App\Models\Database;
+use Exception;
 use PDOException;
 use Slim\Views\PhpRenderer;
 use App\Models\Summoner;
@@ -29,12 +30,9 @@ class SummonerController extends Controller {
                     ->withHeader('Content-Type', 'application/json')
             );
         } catch (SummonerNotFoundException $e) {
-            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-            return (
-                $response
-                    ->withStatus(400)
-                    ->withHeader('Content-Type', 'application/json')
-            );
+            return ErrorHandler::sendError($response, 400, $e->getMessage());
+        } catch (Exception $e) {
+            return ErrorHandler::sendError($response, 500, $e->getMessage());
         }
     }
 
@@ -54,12 +52,7 @@ class SummonerController extends Controller {
                     ->withHeader('Content-Type', 'application/json')
             );
         } catch (SummonerNotFoundException $e) {
-            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-            return (
-                $response
-                    ->withStatus(400)
-                    ->withHeader('Content-Type', 'application/json')
-            );
+            return ErrorHandler::sendError($response, 400, $e->getMessage());
         } catch (PDOException $e) {
             return ErrorHandler::handleDatabaseError($e, $response, 401, "Ce summoner existe déjà !");
         }
