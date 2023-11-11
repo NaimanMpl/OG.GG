@@ -1,5 +1,6 @@
 const form = document.getElementById('search-form');
 const blurWrapper = document.getElementById('blur-wrapper');
+const formWrapper = document.getElementById('search-form-wrapper');
 const searchBtn = document.getElementById('nav--search-btn');
 const summonerInput = document.getElementById('summoner-name');
 const searchDialog = document.querySelector('.search-form--dialog');
@@ -11,8 +12,10 @@ const handleSearchClick = () => {
         form.style.opacity = '0';
         form.classList.remove('active');
         blurWrapper.classList.remove('blur');
+        formWrapper.style.zIndex = '-1';
         return;
     }
+    formWrapper.style.zIndex = '999';
     form.style.opacity = '1';
     form.classList.add('active');
     blurWrapper.classList.add('blur');

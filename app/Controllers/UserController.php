@@ -30,7 +30,7 @@ class UserController {
 
     public function getUserByName(Request $request, Response $response, array $args) {
         $database = new Database();
-        $con = $database->connect();
+        $con = $database->getConnection();
         $query = "SELECT username FROM users WHERE username=?";
         $stmt = $con->prepare($query);
         $stmt->execute(array(urldecode($args['username'])));
@@ -46,6 +46,15 @@ class UserController {
                 ->withStatus(200)
                 ->withHeader('Content-Type', 'application/json')
         );
+    }
+
+    public function logout(Request $request, Response $response) {
+        session_start();
+        setcookie(session_name(), '', 100);
+        session_unset();
+        session_destroy();
+        $_SESSION = array();
+        return $response->withStatus(301)->withHeader('Location', '/');
     }
 }
 

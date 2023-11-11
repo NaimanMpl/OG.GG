@@ -19,7 +19,7 @@ class RegisterController extends Controller {
     private function signup(string $email, string $username, string $password) {
         $database = new Database();
         try {
-            $con = $database->connect();
+            $con = $database->getConnection();
             $query = "INSERT INTO users(email, username, password) VALUES(?, ?, ?)";
             $sth = $con->prepare($query);
             $sth->execute(array($email, $username, password_hash($password, PASSWORD_DEFAULT)));

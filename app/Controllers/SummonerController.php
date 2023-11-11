@@ -69,7 +69,7 @@ class SummonerController extends Controller {
         $summonerName = $args['summonerName'] . "%";
         try {
             $database = new Database();
-            $conn = $database->connect();
+            $conn = $database->getConnection();
             $query = "SELECT name, profileIconId FROM summoners WHERE name LIKE ?";
             $stmt = $conn->prepare($query);
             $stmt->execute(array($summonerName));

@@ -48,6 +48,7 @@ class LoginController extends Controller {
         $response->getBody()->write(json_encode(["success" => true]));
         session_start();
         $_SESSION["username"] = $user["username"];
+        $_SESSION["email"] = $user["email"];
         return ($response
             ->withStatus($HTTP_STATUS_CODE)
             ->withHeader('Location', '/')

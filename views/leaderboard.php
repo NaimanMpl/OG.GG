@@ -12,9 +12,9 @@
 <body>
     <?php include "search.php" ?>
     <div id="blur-wrapper">
-        <?php require_once 'header.php' ?>
+        <?php include 'header.php' ?>
         <main>
-            <h1>Comme il suffisait juste de retirer 10 de MS à Irelia...</h1>
+            <h1 class="leaderboard--title">Comme il suffisait juste de retirer 10 de MS à Irelia...</h1>
             <div class="leaderboard-container">
                 
             </div>
@@ -22,5 +22,6 @@
     </div>
     <script src="/scripts/search.js"></script>
     <script src="/scripts/leaderboard.js"></script>
+    <script src="/scripts/nav.js"></script>
 </body>
 </html>

@@ -3,6 +3,9 @@
 :root {
     --white: #F4F4F4;
     --primary-color: #FF4747;
+    --light-gray: #C2C2C2;
+    --dark-gray: #727272;
+    --default-dark: #222222;
 }
 
 * {
@@ -15,103 +18,108 @@
     position: absolute;
     right: 2rem;
     bottom: 2rem;
-    font-size: 6vmin;
+    font-size: 8vw;
     font-weight: bold;
 }
 
-h2 {
-    font-size: 6vmin;
+h1 {
+    font-size: 7vw;
+    text-align: center;
+    letter-spacing: -1%;
 }
 
-h2::after {
-    content: ".";
-    color: var(--primary-color);
+html, body {
+    overflow-x: hidden;
 }
 
 body {
-    background-color: #141213;
-    color: #F4F4F4;
+    background-color: #FFFFFF;
+    color: var(--default-dark);
+    overflow-x: hidden;
 }
 
 a {
     text-decoration: none;
-    color: var(--primary-color);
+    color: var(--default-dark);
+    font-weight: bold;
 }
 
 main {
-    display: flex;
-    height: 100vh;
-
-}
-
-.register-container--bg {
-    width: calc(100% / 2);
-    height: 100%;
-    background: url('/img/register-bg.jpg');
-    background-position: center;
-    background-size: cover;
-
-}
-
-.register-container--section {
-    width: calc(100% / 2);
-}
-
-.register-container--wrapper {
-    padding: 9rem 7rem;
+    max-height: 100vh;
+    padding: 5rem 3rem;
 }
 
 #register-container--form {
+    margin-top: 3rem;
     display: flex;
+    gap: .45rem;
     flex-direction: column;
-    margin-top: 5rem;
+}
+
+.input-container {
+    position: relative;
+    overflow: hidden;
 }
 
 #register-container--form input {
     position: relative;
-    background: transparent;
+    background: var(--white);
+    border-radius: .5rem;
     border: none;
-    outline: none;
-    padding: 1rem 0;
-    color: var(--white);
+    outline: var(--default-dark);
+    padding: 1rem 1rem;
+    color: var(--default-dark);
+    font-weight: bold;
     transition: border-bottom 0.2s ease;
     font-size: 1.05rem;
-    width: 100%;
-    border-bottom: 1px solid #9D9D9D;
     outline-offset: 1px;
     transition: border-bottom 0.2s ease;
 }
 
-#register-container--form input::before {
-    content: "";
+#register-container--form input:focus::placeholder {
+    opacity: 0;
+    transform: scale(0);
+}
+
+#register-container--form input:focus::before {
+    content: "Hello, World!";
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
-    width: 100px;
-    height: 2px;
-    background: red;
+}
+
+#register-container--form input::placeholder {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: .9rem;
+    transition: opacity 200ms ease, transform 200ms ease;
 }
 
 #register-container--form input:focus {
-    border-bottom: 1px solid var(--primary-color);
+    background: #FFFFFF;
+    border: 2px solid var(--default-dark);
 }
 
 #registerbtn {
-    background: var(--primary-color);
+    position: relative;
+    background: #222222;
     color: #F4F4F4;
     font-weight: 600;
     border: none;
     margin-top: 4rem;
-    padding: .6rem 10rem;
-    border-radius: .7rem;
+    padding: .6rem 0;
+    border-radius: .4rem;
     cursor: pointer;
     font-size: 1.05rem;
     outline: none;
-    position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 #registerbtn:disabled {
-    background-color: #ff6d6d;
     cursor: auto;
 }
 
@@ -141,11 +149,124 @@ main {
 }
 
 .dialog-success {
-    color: var(--white);
+    color: var(--default-dark);
 }
 
 .dialog-error {
     color: var(--primary-color);
+}
+
+.error {
+    margin: 2rem 0;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+main .already-registered {
+    color: var(--light-gray);
+    margin-top: 2rem;
+    text-align: center;
+}
+
+svg, img {
+    display: none;
+}
+
+@media only screen and (min-width: 1024px) {
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: var(--white);
+    }
+
+    main {
+        background-color: #FFFFFF;
+    }
+
+    h1 {
+        font-size: 2vw;
+    }
+
+    #oggg-title {
+        right: 3vw;
+        bottom: 2vw;
+        font-size: 8vmin;
+    }
+
+    main {
+        position: relative;
+        width: 400px;
+    }
+
+    main::after {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        width: 100%;
+        height: 100%;
+        background: #C2C2C2;
+        z-index: -1;
+    }
+
+    svg, img {
+        display: block;
+    }
+
+    #plus {
+        top: 10%;
+        left: 10%;
+        transform: scale(.4);
+    }
+
+    #register-container--form input {
+        font-size: .8rem;
+    }
+
+    #register-container--form input::placeholder {
+        font-size: .8rem;
+    }
+
+    #registerbtn {
+        margin-top: 1.5rem;
+    }
+
+    #points {
+        z-index: -2;
+        top: 10%;
+        right: 15%;
+        position: absolute;
+        transform: scale(.7);
+    }
+
+    #points2 {
+        z-index: -2;
+        bottom: 0;
+        left: 15%;
+        position: absolute;
+        transform: scale(.8);
+    }
+    
+    svg {
+        z-index: -2;
+        position: absolute;
+        transform: scale(1.2);
+    }
+    
+    #triangle {
+        transform: scale(1.5) rotate(90deg);
+        bottom: 30%;
+        right: 10%;
+    }
+    
+    #circle {
+        bottom: -2rem;
+        right: 30%;
+        z-index: -2;
+    }
 }
 
 @keyframes button-loading-spinner {

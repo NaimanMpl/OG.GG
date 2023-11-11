@@ -33,6 +33,7 @@ $errorMiddleware->setErrorHandler(
 $app->get('/', HomeController::class . ":render");
 
 $app->get('/login', LoginController::class . ":render");
+$app->get('/logout', UserController::class . ":logout");
 $app->post('/user/login', LoginController::class . ":login");
 
 $app->get('/register', RegisterController::class . ":render");

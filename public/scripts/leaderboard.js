@@ -1,4 +1,5 @@
 const cardContainer = document.querySelector('.leaderboard-container');
+const titleContainer = document.querySelector('.leaderboard--title');
 
 const buildStatsContainer = (title, subtitle, className) => {
     const container = document.createElement('div');
@@ -19,7 +20,7 @@ const buildStatsContainer = (title, subtitle, className) => {
 
 }
 
-const buildLeaderboardCard = (championName, wins, looses, rank) => {
+const buildLeaderboardCard = (index, championName, wins, looses, rank) => {
     const card = document.createElement('div');
     card.className = 'leaderboard-card';
 
@@ -43,6 +44,9 @@ const buildLeaderboardCard = (championName, wins, looses, rank) => {
     card.appendChild(loosesContainer);
     card.appendChild(winRateContainer);
 
+    card.style.transitionDelay = `${index * 100}ms`;
+    setTimeout(() => card.classList.add('active'), 100);
+
     return card;
 }
 
@@ -59,8 +63,8 @@ const fetchLeaderboard = async () => {
     );
     const leaderboardData = await response.json();
     
-    leaderboardData.forEach((champion) => { 
-        const leaderboardCard = buildLeaderboardCard(champion.championName, champion.wins, champion.looses, champion.rank)
+    leaderboardData.map((champion, index) => { 
+        const leaderboardCard = buildLeaderboardCard(index, champion.championName, champion.wins, champion.looses, champion.rank)
         cardContainer.appendChild(leaderboardCard);
     });
 }
