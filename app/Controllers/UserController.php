@@ -52,6 +52,34 @@ class UserController {
         );
     }
 
+    public function findUniqueUser(Database $database, string $email, string $password): array {
+        $conn = $database->getConnection();
+        $query = "SELECT * FROM users WHERE email=?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute(array($email));
+        $user = $stmt->fetch();
+        if ($stmt->rowCount() == 0 || !password_verify($password, $user["password"])) {
+            return [];
+        } 
+        return $user;
+    }
+
+    public function getFollowers(Request $request, Response $response, array $args) {
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "SELECT summoner_puuid, summoner_id, summoner_name FROM follows WHERE user_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($args["userId"]));
+
+            $response->getBody()->write(json_encode([ "results" => $stmt->fetchAll() ]));
+
+            return $response->withStatus(200)->withHeader("Content-Type", "application/json");
+        } catch (PDOException $e) {
+            return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
+    }
+
     public function logout(Request $request, Response $response) {
         session_start();
         setcookie(session_name(), '', 100);
@@ -73,35 +101,24 @@ class UserController {
         }
     }
 
+    public function login(Request $request, Response $response) {
+        session_start();
+
+        $_SESSION["userId"] = $request->getAttribute("userId");
+        $_SESSION["username"] = $request->getAttribute("username");
+        $_SESSION["email"] = $request->getAttribute("email");
+
+        $response->getBody()->write(json_encode(["success" => true]));
+
+        return ($response
+            ->withStatus(301)
+            ->withHeader('Location', '/')
+        );
+    }
+
     public function register(Request $request, Response $response) {
-        $userData = json_decode($request->getBody(), true);
-
-        if (!isset($userData['username']) || empty($userData['username'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un nom d'utilisateur");    
-        } else if (!isset($userData['email']) || empty($userData['email'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner une adresse email !");    
-        } else if (!isset($userData['password']) || empty($userData['password'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un mot de passe !");    
-        } else if (!isset($userData["confirmPassword"]) || empty($userData["confirmPassword"])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un mot de passe de confirmation !");    
-        }
-
-        if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            return ErrorHandler::sendError($response, 452, "Veuillez renseigner une adresse email valide !");    
-        }
-
-        $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/';
-
-        if (!preg_match($passwordRegex, $userData['password'])) {
-            return ErrorHandler::sendError($response, 453, "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial !");    
-        }
-
-        if ($userData["password"] !== $userData["confirmPassword"]) {
-            return ErrorHandler::sendError($response, 454, "Les 2 mots de passes doivent être identiques !");    
-        }
-
         try {
-            $this->signup(strtolower($userData['email']), $userData['username'], $userData['password']);
+            $this->signup(strtolower($request->getAttribute("email")), $request->getAttribute("username"), $request->getAttribute("password"));
             $response->getBody()->write(json_encode(["success" => true]));
         } catch (DatabaseException $e) {
 
@@ -116,6 +133,34 @@ class UserController {
             ->withStatus(301)
             ->withHeader('Location', '/login')
         );
+    }
+
+    public function followSummoner(Request $request, Response $response) {
+        $summonerId = $request->getAttribute('summonerId');
+        $summonerPuuid = $request->getAttribute('summonerPuuid');
+        $summonerName = $request->getAttribute('summonerName');
+        $userId = $_SESSION["userId"];
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "INSERT INTO follows(user_id, summoner_id, summoner_puuid, summoner_name) VALUES(?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($userId, $summonerId, $summonerPuuid, $summonerName));
+
+            $response->getBody()->write(json_encode(["success" => true]));
+
+            return (
+                $response
+                    ->withStatus(200)
+                    ->withHeader("Content-Type", 'Application/json')
+            );
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return ErrorHandler::handleDatabaseError($e, $response, 500, "Cet utilisateur suit déjà ce summoner !");
+            }
+
+            return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
     }
 }
 

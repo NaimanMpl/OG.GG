@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class SummonerController extends Controller {
 
     public function render(Request $request, Response $response) {
+        session_start();
         $renderer = new PhpRenderer("../views");
         return $renderer->render($response->withStatus(200), "summoner-page.php");
     }

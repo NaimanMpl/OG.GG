@@ -13,6 +13,8 @@ use App\Controllers\RegisterController;
 use App\Controllers\ChampionController;
 use App\Controllers\UserController;
 use App\Controllers\SummonerController;
+use App\Middlewares\AuthMiddleware;
+use App\Middlewares\FollowMiddleware;
 use Slim\Views\PhpRenderer;
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
@@ -34,14 +36,16 @@ $app->get('/', HomeController::class . ":render");
 
 $app->get('/login', LoginController::class . ":render");
 $app->get('/logout', UserController::class . ":logout");
-$app->post('/user/login', LoginController::class . ":login");
+$app->post('/user/login', UserController::class . ":login")->add(AuthMiddleware::class . ":handleLogin");
 
 $app->get('/register', RegisterController::class . ":render");
-$app->post('/user/register', UserController::class . ":register");
+$app->post('/user/register', UserController::class . ":register")->add(AuthMiddleware::class .":handleRegister");
 
 
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
+$app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
+$app->get('/user/{userId}/followers', UserController::class . ":getFollowers");
 $app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");

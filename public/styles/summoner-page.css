@@ -100,6 +100,7 @@ main, .ranked-cards--container {
     border-radius: .3rem;
     border: none;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .profilCard--cardFollow-container {
