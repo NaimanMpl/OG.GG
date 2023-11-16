@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\ErrorHandler;
 use App\Exceptions\DatabaseException;
 use App\Models\Database;
+use App\Models\Mailer;
 use PDOException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -94,10 +95,22 @@ class UserController {
         try {
             $con = $database->getConnection();
             $query = "INSERT INTO users(email, username, password) VALUES(?, ?, ?)";
-            $sth = $con->prepare($query);
-            $sth->execute(array($email, $username, password_hash($password, PASSWORD_DEFAULT)));
+            $stmt = $con->prepare($query);
+            $stmt->execute(array($email, $username, password_hash($password, PASSWORD_DEFAULT)));
+            
+            $token = bin2hex(random_bytes(16));
+
+            $query = "INSERT INTO tokens(email, token) VALUES (?, ?)";
+            $stmt = $con->prepare($query);
+            $stmt->execute(array($email, $token));
+            
+            $mailer = new Mailer();
+            $mailer->sendMail($email, "Confirmation de votre adresse e-mail", 'confirm-mail-template.php', [ "token" => $token ]);
+
         } catch (PDOException $e) {
             throw new DatabaseException($e->errorInfo[1], "La connexion à la base de données à échoué.");
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -119,7 +132,7 @@ class UserController {
     public function register(Request $request, Response $response) {
         try {
             $this->signup(strtolower($request->getAttribute("email")), $request->getAttribute("username"), $request->getAttribute("password"));
-            $response->getBody()->write(json_encode(["success" => true]));
+            $response->getBody()->write(json_encode(["message" => "Un email de confirmation vous a été envoyé.", "success" => true]));
         } catch (DatabaseException $e) {
 
             if ($e->getErrorCode() === 1062) {
@@ -127,11 +140,13 @@ class UserController {
             }
 
             return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard");    
+        } catch (Exception $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard");    
         }
 
         return ($response
-            ->withStatus(301)
-            ->withHeader('Location', '/login')
+            ->withStatus(200)
+            ->withHeader("Content-Type", "application/json")
         );
     }
 
@@ -160,6 +175,37 @@ class UserController {
             }
 
             return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
+    }
+
+    public function validAccount(Database $database, string $email): bool {
+        $conn = $database->getConnection();
+        $query = "SELECT email FROM tokens WHERE email=?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute(array($email));
+
+        return $stmt->rowCount() == 0;
+    }
+
+    public function activateAccount(Request $request, Response $response) {
+        $email = $request->getAttribute("email");
+        try {
+            $database = new Database();
+
+            $conn = $database->getConnection();
+            $query = "DELETE FROM tokens WHERE email=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($email));
+
+            $query = "SELECT username FROM users WHERE email=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($email));
+            
+            $username = $stmt->fetch()["username"];
+
+            return $response->withStatus(301)->withHeader("Location", "/success?username=".urlencode($username));
+        } catch (PDOException $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
         }
     }
 }

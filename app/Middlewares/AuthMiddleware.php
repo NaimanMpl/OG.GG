@@ -34,6 +34,11 @@ class AuthMiddleware {
         try {
             $database = new Database();
             $controller = new UserController();
+
+            if (!$controller->validAccount($database, $userData["email"])) {
+                return ErrorHandler::sendError($response, 400, "Veuillez confirmer votre adresse email");
+            }
+
             $user = $controller->findUniqueUser($database, $userData["email"], $userData["password"]);
 
             if (empty($user)) {
@@ -83,6 +88,27 @@ class AuthMiddleware {
         $request = $request->withAttribute("password", $userData["password"]);
 
         return $handler->handle($request);
+    }
+
+    public function verifyToken(Request $request, RequestHandler $handler): Response {
+        $response = new SlimResponse();
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "SELECT email FROM tokens WHERE token=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($_GET["token"]));
+
+            if ($stmt->rowCount() == 0) {
+                return ErrorHandler::sendError($response, 400, "Token invalide !");
+            }
+
+            $request = $request->withAttribute("email", $stmt->fetch()["email"]);
+
+            return $handler->handle($request);
+        } catch (PDOException $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
     }
 
 };

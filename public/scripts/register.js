@@ -39,9 +39,11 @@ const handleRegister = async (e) => {
         }
     );
     
+    const data = await response.json();
+    const errorMessage = document.querySelector('.error');
+    const successMessage = document.querySelector('.success');
+
     if (!response.ok) {
-        const errorMessage = document.querySelector('.error');
-        const data = await response.json();
         errorMessage.textContent = data.error;
         errorMessage.className = 'error';
         registerBtn.classList.remove("loading");
@@ -49,8 +51,9 @@ const handleRegister = async (e) => {
     }
 
     registerBtn.classList.remove("loading");
-    
-    window.location.href = "/login";
+
+    errorMessage.textContent = '';
+    successMessage.textContent = data.message;
 }
 
 const updateEmailDialog = async (e) => {

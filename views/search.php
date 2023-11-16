@@ -3,6 +3,7 @@
         <div class="search-container">
             <button type="submit">Rechercher</button>
             <input type="search" name="summoner-name" id="summoner-name" placeholder="Rechercher un joueur">
+            <img class="close-nav" src="/img/close.svg" alt="Fermer">
         </div>
         <p class="search-form--dialog"></p>
         <div class="search-results-container">

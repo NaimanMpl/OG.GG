@@ -10,7 +10,8 @@
         "laminas/laminas-diactoros": "^3.2",
         "vlucas/phpdotenv": "^5.5",
         "slim/twig-view": "^3.3",
-        "slim/php-view": "^3.2"
+        "slim/php-view": "^3.2",
+        "phpmailer/phpmailer": "^6.8"
     },
     "autoload": {
         "psr-4": {

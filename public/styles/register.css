@@ -162,6 +162,12 @@ main {
     color: var(--primary-color);
 }
 
+.success {
+    margin: 2rem 0;
+    text-align: center;
+    color: var(--dark-gray);
+}
+
 main .already-registered {
     color: var(--light-gray);
     margin-top: 2rem;
@@ -266,6 +272,12 @@ svg, img {
         bottom: -2rem;
         right: 30%;
         z-index: -2;
+    }
+
+    .success {
+        margin: 2rem 0;
+        text-align: center;
+        color: var(--dark-gray);
     }
 }
 

@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Models\Mailer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -16,6 +17,7 @@ use App\Controllers\SummonerController;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\FollowMiddleware;
 use Slim\Views\PhpRenderer;
+use PHPMailer\PHPMailer\PHPMailer;
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
@@ -33,15 +35,14 @@ $errorMiddleware->setErrorHandler(
 );
 
 $app->get('/', HomeController::class . ":render");
-
 $app->get('/login', LoginController::class . ":render");
 $app->get('/logout', UserController::class . ":logout");
 $app->post('/user/login', UserController::class . ":login")->add(AuthMiddleware::class . ":handleLogin");
+$app->get('/verify', UserController::class . ":activateAccount")->add(AuthMiddleware::class . ":verifyToken");
+$app->get('/success', RegisterController::class . ":handleAccountCreation");
 
 $app->get('/register', RegisterController::class . ":render");
 $app->post('/user/register', UserController::class . ":register")->add(AuthMiddleware::class .":handleRegister");
-
-
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
 $app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
