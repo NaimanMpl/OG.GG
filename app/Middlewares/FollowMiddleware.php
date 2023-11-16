@@ -20,7 +20,8 @@ class FollowMiddleware {
         $summonerName = $routeContext->getRoute()->getArgument('summonerName');
 
         if (!isset($_SESSION["userId"]) || empty($_SESSION["userId"])) {
-            return $response->withStatus(301)->withHeader('Location', '/');
+            $response->getBody()->write(json_encode(["error" => "Vous devez être connecté pour suivre un summoner !"]));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
 
         try {

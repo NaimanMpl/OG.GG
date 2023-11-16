@@ -2,11 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Models\Mailer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
@@ -17,7 +14,6 @@ use App\Controllers\SummonerController;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\FollowMiddleware;
 use Slim\Views\PhpRenderer;
-use PHPMailer\PHPMailer\PHPMailer;
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
@@ -38,6 +34,7 @@ $app->get('/', HomeController::class . ":render");
 $app->get('/login', LoginController::class . ":render");
 $app->get('/logout', UserController::class . ":logout");
 $app->post('/user/login', UserController::class . ":login")->add(AuthMiddleware::class . ":handleLogin");
+
 $app->get('/verify', UserController::class . ":activateAccount")->add(AuthMiddleware::class . ":verifyToken");
 $app->get('/success', RegisterController::class . ":handleAccountCreation");
 
@@ -47,12 +44,14 @@ $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
 $app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
 $app->get('/user/{userId}/followers', UserController::class . ":getFollowers");
+
 $app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
 $app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
 $app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":updateLeaderboard");
 $app->get('/summoner/{name}', SummonerController::class . ":render");
+
 $app->get('/leaderboard', ChampionController::class . ":render");
 $app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
 
