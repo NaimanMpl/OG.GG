@@ -3,7 +3,6 @@ const scrollTitles = document.querySelector('.scroll-titles-wrapper');
 const rankCardContainer = document.querySelector('.ranked-cards--container');
 const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
 
-
 const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
     
     const summonerProfilePictureWrapper = document.createElement('div');
@@ -399,6 +398,52 @@ const buildMatchCard = (match) => {
     return matchCardData;
 }
 
+const fetchSummonerMatches = async (summonerData) => {
+
+    const matchesID = summonerData.matches;
+    let promises = [];
+    
+    matchesID.forEach( matchID => {
+        promises.push( fetch (
+            `/matches/${matchID}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Accept' : 'application/json'
+                }
+            }
+        )
+        )   
+    }
+    );
+
+    const responseMatches = await Promise.all(promises);
+    promises = [];
+
+    responseMatches.forEach( (match) => {
+        promises.push(match.json());
+    }
+    );
+
+    const titleMatchHistoric = buildMatchesHistoric();
+    matchesHistoricCardsContainer.appendChild(titleMatchHistoric);
+
+    const matchesData = await Promise.all(promises);
+
+    matchesData.forEach( (match) => {
+        console.log(match);
+        const matchCard = buildMatchCard(match);
+        if (matchCard != null) {
+            matchesHistoricCardsContainer.appendChild(matchCard);
+        }
+    }
+
+
+    );
+
+}
+
 const fetchSummonerData = async () => {
 
     const response = await fetch(
@@ -431,53 +476,7 @@ const fetchSummonerData = async () => {
     rankCardContainer.appendChild(summonerRankedCards[0]);
     rankCardContainer.appendChild(summonerRankedCards[1]);
 
-    const fetchSummonerMatches = async () => {
-
-        const matchesID = summonerData.matches;
-        let promises = [];
-        
-        matchesID.forEach( matchID => {
-            promises.push( fetch (
-                `/matches/${matchID}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type' : 'application/json',
-                        'Accept' : 'application/json'
-                    }
-                }
-            )
-            )   
-        }
-        );
-
-        const responseMatches = await Promise.all(promises);
-        promises = [];
-
-        responseMatches.forEach( (match) => {
-            promises.push(match.json());
-        }
-        );
-
-        const titleMatchHistoric = buildMatchesHistoric();
-        matchesHistoricCardsContainer.appendChild(titleMatchHistoric);
-
-        const matchesData = await Promise.all(promises);
-
-        matchesData.forEach( (match) => {
-            console.log(match);
-            const matchCard = buildMatchCard(match);
-            if (matchCard != null) {
-                matchesHistoricCardsContainer.appendChild(matchCard);
-            }
-        }
-
-
-        );
-
-    }
-
-    fetchSummonerMatches();
+    fetchSummonerMatches(summonerData);
 }
 
 fetchSummonerData();
