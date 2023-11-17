@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
-
-<defs>
-</defs>
-<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
-	<path d="M 6 90 c -1.536 0 -3.071 -0.586 -4.243 -1.758 c -2.343 -2.343 -2.343 -6.142 0 -8.484 l 78 -78 c 2.342 -2.343 6.143 -2.343 8.484 0 c 2.344 2.343 2.344 6.142 0 8.485 l -78 78 C 9.071 89.414 7.536 90 6 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(244,244,244); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-	<path d="M 84 90 c -1.535 0 -3.071 -0.586 -4.242 -1.758 l -78 -78 c -2.343 -2.343 -2.343 -6.142 0 -8.485 c 2.343 -2.343 6.143 -2.343 8.485 0 l 78 78 c 2.344 2.343 2.344 6.142 0 8.484 C 87.071 89.414 85.535 90 84 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(244,244,244); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_591_888)">
+<path d="M2.14066 29.8016C1.63486 29.8016 1.12939 29.6086 0.743452 29.2227C-0.0280907 28.4511 -0.0280907 27.2001 0.743452 26.4289L26.4286 0.743757C27.1998 -0.0277855 28.4515 -0.0277855 29.2224 0.743757C29.9942 1.5153 29.9942 2.7663 29.2224 3.53784L3.53721 29.223C3.15193 29.6086 2.64646 29.8016 2.14066 29.8016Z" fill="#F4F4F4"/>
+<path d="M27.8257 29.8016C27.3203 29.8016 26.8145 29.6086 26.4289 29.2227L0.743696 3.53751C-0.0278466 2.76596 -0.0278466 1.51496 0.743696 0.743421C1.51524 -0.0281212 2.76657 -0.0281212 3.53778 0.743421L29.2229 26.4286C29.9948 27.2001 29.9948 28.4511 29.2229 29.2223C28.837 29.6086 28.3312 29.8016 27.8257 29.8016Z" fill="#F4F4F4"/>
 </g>
+<defs>
+<clipPath id="clip0_591_888">
+<rect width="30" height="30" fill="white"/>
+</clipPath>
+</defs>
 </svg>

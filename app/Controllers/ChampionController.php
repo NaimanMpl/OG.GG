@@ -16,6 +16,7 @@ use Slim\Views\PhpRenderer;
 class ChampionController extends Controller {
 
     public function render(Request $request, Response $response) {
+        session_start();
         $renderer = new PhpRenderer("../views");
         return $renderer->render($response, "leaderboard.php");
     }

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\ErrorHandler;
 use App\Exceptions\DatabaseException;
 use App\Models\Database;
+use App\Models\Mailer;
 use PDOException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -52,6 +53,34 @@ class UserController {
         );
     }
 
+    public function findUniqueUser(Database $database, string $email, string $password): array {
+        $conn = $database->getConnection();
+        $query = "SELECT * FROM users WHERE email=?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute(array($email));
+        $user = $stmt->fetch();
+        if ($stmt->rowCount() == 0 || !password_verify($password, $user["password"])) {
+            return [];
+        } 
+        return $user;
+    }
+
+    public function getFollowers(Request $request, Response $response, array $args) {
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "SELECT summoner_puuid, summoner_id, summoner_name FROM follows WHERE user_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($args["userId"]));
+
+            $response->getBody()->write(json_encode([ "results" => $stmt->fetchAll() ]));
+
+            return $response->withStatus(200)->withHeader("Content-Type", "application/json");
+        } catch (PDOException $e) {
+            return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
+    }
+
     public function logout(Request $request, Response $response) {
         session_start();
         setcookie(session_name(), '', 100);
@@ -66,43 +95,44 @@ class UserController {
         try {
             $con = $database->getConnection();
             $query = "INSERT INTO users(email, username, password) VALUES(?, ?, ?)";
-            $sth = $con->prepare($query);
-            $sth->execute(array($email, $username, password_hash($password, PASSWORD_DEFAULT)));
+            $stmt = $con->prepare($query);
+            $stmt->execute(array($email, $username, password_hash($password, PASSWORD_DEFAULT)));
+            
+            $token = bin2hex(random_bytes(16));
+
+            $query = "INSERT INTO tokens(email, token) VALUES (?, ?)";
+            $stmt = $con->prepare($query);
+            $stmt->execute(array($email, $token));
+            
+            $mailer = new Mailer();
+            $mailer->sendMail($email, "Confirmation de votre adresse e-mail", 'confirm-mail-template.php', [ "token" => $token ]);
+
         } catch (PDOException $e) {
             throw new DatabaseException($e->errorInfo[1], "La connexion à la base de données à échoué.");
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
+    public function login(Request $request, Response $response) {
+        session_start();
+
+        $_SESSION["userId"] = $request->getAttribute("userId");
+        $_SESSION["username"] = $request->getAttribute("username");
+        $_SESSION["email"] = $request->getAttribute("email");
+
+        $response->getBody()->write(json_encode(["success" => true]));
+
+        return ($response
+            ->withStatus(301)
+            ->withHeader('Location', '/')
+        );
+    }
+
     public function register(Request $request, Response $response) {
-        $userData = json_decode($request->getBody(), true);
-
-        if (!isset($userData['username']) || empty($userData['username'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un nom d'utilisateur");    
-        } else if (!isset($userData['email']) || empty($userData['email'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner une adresse email !");    
-        } else if (!isset($userData['password']) || empty($userData['password'])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un mot de passe !");    
-        } else if (!isset($userData["confirmPassword"]) || empty($userData["confirmPassword"])) {
-            return ErrorHandler::sendError($response, 400, "Veuillez renseigner un mot de passe de confirmation !");    
-        }
-
-        if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            return ErrorHandler::sendError($response, 452, "Veuillez renseigner une adresse email valide !");    
-        }
-
-        $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/';
-
-        if (!preg_match($passwordRegex, $userData['password'])) {
-            return ErrorHandler::sendError($response, 453, "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial !");    
-        }
-
-        if ($userData["password"] !== $userData["confirmPassword"]) {
-            return ErrorHandler::sendError($response, 454, "Les 2 mots de passes doivent être identiques !");    
-        }
-
         try {
-            $this->signup(strtolower($userData['email']), $userData['username'], $userData['password']);
-            $response->getBody()->write(json_encode(["success" => true]));
+            $this->signup(strtolower($request->getAttribute("email")), $request->getAttribute("username"), $request->getAttribute("password"));
+            $response->getBody()->write(json_encode(["message" => "Un email de confirmation vous a été envoyé.", "success" => true]));
         } catch (DatabaseException $e) {
 
             if ($e->getErrorCode() === 1062) {
@@ -110,12 +140,73 @@ class UserController {
             }
 
             return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard");    
+        } catch (Exception $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard");    
         }
 
         return ($response
-            ->withStatus(301)
-            ->withHeader('Location', '/login')
+            ->withStatus(200)
+            ->withHeader("Content-Type", "application/json")
         );
+    }
+
+    public function followSummoner(Request $request, Response $response) {
+        $summonerId = $request->getAttribute('summonerId');
+        $summonerPuuid = $request->getAttribute('summonerPuuid');
+        $summonerName = $request->getAttribute('summonerName');
+        $userId = $_SESSION["userId"];
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "INSERT INTO follows(user_id, summoner_id, summoner_puuid, summoner_name) VALUES(?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($userId, $summonerId, $summonerPuuid, $summonerName));
+
+            $response->getBody()->write(json_encode(["success" => true]));
+
+            return (
+                $response
+                    ->withStatus(200)
+                    ->withHeader("Content-Type", 'Application/json')
+            );
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return ErrorHandler::handleDatabaseError($e, $response, 500, "Cet utilisateur suit déjà ce summoner !");
+            }
+
+            return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
+    }
+
+    public function validAccount(Database $database, string $email): bool {
+        $conn = $database->getConnection();
+        $query = "SELECT email FROM tokens WHERE email=?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute(array($email));
+
+        return $stmt->rowCount() == 0;
+    }
+
+    public function activateAccount(Request $request, Response $response) {
+        $email = $request->getAttribute("email");
+        try {
+            $database = new Database();
+
+            $conn = $database->getConnection();
+            $query = "DELETE FROM tokens WHERE email=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($email));
+
+            $query = "SELECT username FROM users WHERE email=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($email));
+            
+            $username = $stmt->fetch()["username"];
+
+            return $response->withStatus(301)->withHeader("Location", "/success?username=".urlencode($username));
+        } catch (PDOException $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
     }
 }
 

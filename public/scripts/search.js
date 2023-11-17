@@ -6,6 +6,7 @@ const summonerInput = document.getElementById('summoner-name');
 const searchDialog = document.querySelector('.search-form--dialog');
 const resultsContainer = document.querySelector('.search-results-container');
 const results = document.querySelectorAll('.search-result');
+const closeNav = document.querySelector('.close-nav');
 
 const handleSearchClick = () => {
     if (blurWrapper.classList.contains('blur')) {
@@ -81,6 +82,7 @@ const handleTyping = async (e) => {
     }
 
     const summonerName = e.target.value;
+    console.log(`/summoners/search/${encodeURIComponent(summonerName)}`)
     const response = await fetch(
         `/summoners/search/${encodeURIComponent(summonerName)}`,
         {
@@ -117,5 +119,13 @@ const handleTyping = async (e) => {
 
 }
 
+const closeNavMenu = () => {
+    form.style.opacity = '0';
+    form.classList.remove('active');
+    blurWrapper.classList.remove('blur');
+    formWrapper.style.zIndex = '-1';
+}
+
 searchBtn.addEventListener('click', handleSearchClick);
 summonerInput.addEventListener('input', handleTyping);
+closeNav.addEventListener('click', closeNavMenu);

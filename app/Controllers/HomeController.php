@@ -11,6 +11,7 @@ use App\Controller\Controllers;
 class HomeController extends Controller {
 
     public function render(Request $request, Response $response) {
+        session_start();
         $renderer = new PhpRenderer('../views');
         return $renderer->render($response->withStatus(200), 'index.php');
     }

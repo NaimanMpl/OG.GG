@@ -20,7 +20,6 @@
     <div id="blur-wrapper">
         <?php include "header.php" ?>
         <main>
-            <h1></h1>
             <div class="profileCard--cardFollow-container">
                 <div class="profilCard--playerInfos-container">
 
@@ -38,6 +37,9 @@
             </div>
         </div>
         <div class="ranked-cards--container">
+
+        </div>
+        <div class="matches-historic-cards--container">
 
         </div>
         <div class="spinner-container spinner-visible">

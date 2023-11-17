@@ -1,18 +1,19 @@
 body {
-    background: var(--dark-bg);
+    background: var(--white);
 }
 
 main {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     font-weight: bold;
+    margin-top: 10rem;
 }
 
-h1::after {
-    content: ".";
-    color: var(--primary-color);
+h1 {
+    font-size: 20vw;
+    letter-spacing: -1%;
 }
 
 main p {
@@ -25,6 +26,13 @@ main span {
 }
 
 main span a {
-    font-weight: 500;
-    color: var(--primary-color);
+    font-weight: bold;
+    color: var(--default-dark);
+}
+
+@media only screen and (min-width: 1024px) {
+    h1 {
+        font-size: 5vw;
+        letter-spacing: -1%;
+    }
 }

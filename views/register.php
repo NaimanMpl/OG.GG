@@ -10,6 +10,7 @@
     <main class="register-container">
         <h1>Créer un compte.</h1>
         <p class="error"></p>
+        <p class="success"></p>
         <form id="register-container--form">
             <input type="text" name="email" id="email" placeholder="Adresse email">
             <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--email-dialog"></p>
