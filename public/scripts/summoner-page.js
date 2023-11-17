@@ -1,6 +1,8 @@
 const profilCardContainer = document.querySelector('.profileCard--cardFollow-container');
 const scrollTitles = document.querySelector('.scroll-titles-wrapper');
 const rankCardContainer = document.querySelector('.ranked-cards--container');
+const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
+
 
 const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
     
@@ -33,7 +35,7 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
 
     summonerProfilePictureWrapper.appendChild(summonerProfilPicture);
 
-    const pseudo = document.createElement('span');
+    const pseudo = document.createElement('h1');
     pseudo.className = 'profilCard--pseudo';
     pseudo.textContent = summonerName;
 
@@ -270,6 +272,133 @@ const buildRankedCard = (queue) => {
     return rankedCard;
 }
 
+function timeConversion(timeInSeconds) {
+    const now = new Date();
+    const futurTime = new Date(now.getTime() + timeInSeconds * 1000);
+
+    const difference = futurTime - now;
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const secondsRemaining = Math.floor((difference % (1000 * 60 * 60 * 24)) / 1000);
+
+    if (days >= 30) {
+        const months = Math.floor(days / 30);
+        return "Il y a " + months + " mois";
+    } else if (days > 0) {
+        return "Il y a " + days + " jours.";
+    } else {
+        const minutes = Math.floor(secondsRemaining / 60);
+        return "Il y a " + minutes + " minutes";
+    }
+}
+
+const buildMatchesHistoric = () => {
+    const matchesHistoricTitle = document.createElement('span');
+    matchesHistoricTitle.className = 'matches-historic--title';
+    matchesHistoricTitle.textContent = 'Historique des dernières parties';
+
+    return matchesHistoricTitle;
+}
+
+// const rankAverage = (match) => {
+//     for 
+// }
+
+const buildMatchCard = (match) => {
+
+    const sumName = window.location.href.split("/").slice(-1)[0];
+
+    const matchCardData = document.createElement('div');
+    matchCardData.className = 'match-card--data';
+
+    let indexSummoner = -1;
+    for (let i = 0; i < match.participants.length; i++) {
+        if (match.participants[i].summonerName === sumName) {
+            indexSummoner = i;
+            break;
+        }
+    }
+
+    if (indexSummoner === -1) {
+        return null;
+    }
+
+    const winOrLoss = document.createElement('span');
+    winOrLoss.className = 'match-card--win-loss';
+    if (match.participants[indexSummoner].win != true) {
+        winOrLoss.textContent = 'Défaite';
+    } else {
+        winOrLoss.textContent = 'Victoire';
+    }
+
+    const playedChamp = document.createElement('img');
+    playedChamp.src = `https://ddragon.leagueoflegends.com/cdn/13.22.1/img/champion/${match.participants[indexSummoner].championName}.png`;
+    playedChamp.alt = 'Image du champion joué';
+    playedChamp.className = 'match-card--played-champ';
+
+    const rolePlayed = document.createElement('span');
+    rolePlayed.className = 'match-card--role';
+    if (match.participants[indexSummoner].role == ""){
+        rolePlayed.textContent = 'AUCUN';
+    } else {
+        rolePlayed.textContent = match.participants[indexSummoner].role;
+    }
+
+    const queuePlayed = document.createElement('span');
+    queuePlayed.className = 'match-card--queue-played';
+    if (match.queueId == 440) {
+        queuePlayed.textContent = 'Classé Flexible';
+    } else if (match.queueId == 420) {
+        queuePlayed.textContent = 'Classé Solo';
+    } else {
+        queuePlayed.textContent = 'Non classé';
+    }
+
+    const happenedTime = document.createElement('span');
+    happenedTime.className = 'match-card--happened-time';
+    happenedTime.textContent = timeConversion(match.matchHappened);
+
+    const gameDuration = document.createElement('span');
+    gameDuration.className = 'match-card--game-duration';
+    gameDuration.textContent = `${match.matchDuration.minutes}:${match.matchDuration.seconds}`;
+
+    const kda = document.createElement('span');
+    kda.className = 'match-card--kda';
+    kda.textContent = `${match.participants[indexSummoner].kda} KDA`;
+
+    const creeps = document.createElement('span');
+    creeps.className = 'match-card--cs';
+    creeps.textContent = `${match.participants[indexSummoner].totalCs} CS`;
+
+    const averageRank = document.createElement('span');
+    averageRank.className = 'match-card--average-rank';
+    averageRank.textContent = 'Rang moyen';
+    // averageRank.textContent = rankAverage(match);
+
+    const gameInfos = document.createElement('div');
+    gameInfos.className = 'match-card--game-infos';
+    gameInfos.appendChild(rolePlayed);
+    gameInfos.appendChild(queuePlayed);
+    gameInfos.appendChild(happenedTime);
+    gameInfos.appendChild(gameDuration);
+
+    const playerStats = document.createElement('div');
+    playerStats.className = 'match-card--player-stats';
+    playerStats.appendChild(kda);
+    playerStats.appendChild(creeps);
+    playerStats.appendChild(averageRank);
+
+    const gameStatsContainer = document.createElement('div');
+    gameStatsContainer.className = 'match-card--game-stats-container';
+    gameStatsContainer.appendChild(winOrLoss);
+    gameStatsContainer.appendChild(gameInfos);
+    gameStatsContainer.appendChild(playerStats);
+
+    matchCardData.appendChild(playedChamp);
+    matchCardData.appendChild(gameStatsContainer);
+
+    return matchCardData;
+}
+
 const fetchSummonerData = async () => {
 
     const response = await fetch(
@@ -301,6 +430,54 @@ const fetchSummonerData = async () => {
     const summonerRankedCards = buildRankedCards(summonerData.queues.soloQueue, summonerData.queues.flexQueue);
     rankCardContainer.appendChild(summonerRankedCards[0]);
     rankCardContainer.appendChild(summonerRankedCards[1]);
+
+    const fetchSummonerMatches = async () => {
+
+        const matchesID = summonerData.matches;
+        let promises = [];
+        
+        matchesID.forEach( matchID => {
+            promises.push( fetch (
+                `/matches/${matchID}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                        'Accept' : 'application/json'
+                    }
+                }
+            )
+            )   
+        }
+        );
+
+        const responseMatches = await Promise.all(promises);
+        promises = [];
+
+        responseMatches.forEach( (match) => {
+            promises.push(match.json());
+        }
+        );
+
+        const titleMatchHistoric = buildMatchesHistoric();
+        matchesHistoricCardsContainer.appendChild(titleMatchHistoric);
+
+        const matchesData = await Promise.all(promises);
+
+        matchesData.forEach( (match) => {
+            console.log(match);
+            const matchCard = buildMatchCard(match);
+            if (matchCard != null) {
+                matchesHistoricCardsContainer.appendChild(matchCard);
+            }
+        }
+
+
+        );
+
+    }
+
+    fetchSummonerMatches();
 }
 
 fetchSummonerData();
