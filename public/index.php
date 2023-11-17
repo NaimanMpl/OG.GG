@@ -51,7 +51,7 @@ $app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":u
 $app->get('/summoner/{name}', SummonerController::class . ":render");
 $app->get('/leaderboard', ChampionController::class . ":render");
 $app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
-$app->get('/matchs/{matchId}', MatchController::class . ':getMatch');
+$app->get('/matches/{matchId}', MatchController::class . ':getMatch');
 
 $app->run();
 ?>

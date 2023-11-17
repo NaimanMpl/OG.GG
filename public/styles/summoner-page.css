@@ -1,4 +1,4 @@
-main, .ranked-cards--container {
+main, .ranked-cards--container, .matches-historic-cards--container {
     padding: var(--mobile-padding);
 }
 
@@ -246,4 +246,47 @@ main, .ranked-cards--container {
     display: flex;
     justify-content: space-between;
     font-size: small;
+}
+
+
+.match-card--data {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #C2C2C2;
+    padding: .5rem 0rem;
+}
+
+.match-card--game-stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+
+.match-card--played-champ {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    margin-left: .5rem;
+    border: 2px solid var(--default-dark);
+}
+
+.match-card--win-loss {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.match-card--game-infos {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: .75rem;
+}
+
+.match-card--player-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: .75rem;
+    font-weight: 550;
 }
