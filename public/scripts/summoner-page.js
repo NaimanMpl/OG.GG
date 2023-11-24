@@ -2,6 +2,7 @@ const profilCardContainer = document.querySelector('.profileCard--cardFollow-con
 const scrollTitles = document.querySelector('.scroll-titles-wrapper');
 const rankCardContainer = document.querySelector('.ranked-cards--container');
 const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
+const playerMatchesRankedContainer = document.querySelector('.player-matches-ranked--container');
 
 
 const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
@@ -56,8 +57,18 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     level.style.fontWeight = 'bold';
     level.textContent = `${accountLevel}`;
 
+    const followBtnDesktop = document.createElement('button');
+    followBtnDesktop.className = 'profilCard--followBtn-desktop';
+    followBtnDesktop.textContent = 'Suivre';
+
     levelContainer.appendChild(levelText);
     levelContainer.appendChild(level);
+
+    const levelFollowBtnContainer = document.createElement('div');
+    levelFollowBtnContainer.className = 'profilCard--level-follow-btn-container-desktop';
+    levelFollowBtnContainer.appendChild(levelContainer);
+    levelFollowBtnContainer.appendChild(followBtnDesktop);
+
 
     const pseudoAndServer = document.createElement('div');
     pseudoAndServer.className = 'profilCard--pseudoServer-container';
@@ -67,6 +78,7 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     const playerInfos = document.querySelector('.profilCard--playerInfos-container');
     playerInfos.appendChild(pseudoAndServer);
     playerInfos.appendChild(levelContainer);
+    playerInfos.appendChild(levelFollowBtnContainer);
 
     const container = document.createElement('div');
     container.className = 'profilCard--playerDataCard-container';
@@ -78,15 +90,15 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
 }
 
 const buildProfilCardContainer = (summonerName, profilPicture, server, accountLevel) => {
-    const followBtn = document.createElement('button');
-    followBtn.className = 'profilCard--followBtn';
-    followBtn.textContent = 'Suivre';
+    const followBtnNav = document.createElement('button');
+    followBtnNav.className = 'profilCard--followBtn-nav';
+    followBtnNav.textContent = 'Suivre';
 
     const profilCardInfos = buildProfilInfosContainer(summonerName, profilPicture, server, accountLevel);
     const profilCard = document.createElement('div');
     profilCard.className = 'profilCard--cardFollow-container';
     profilCard.appendChild(profilCardInfos);
-    profilCard.appendChild(followBtn);
+    profilCard.appendChild(followBtnNav);
 
     return profilCard;
 }
@@ -110,7 +122,7 @@ const buildScrollingTitles = (rankSoloQ, rankFlexQ) => {
     const scrollingTitleSoloQ = document.querySelector('.scrolling-titles--soloQ-container');
     const scrollingTitleFlexQ = document.querySelector('.scrolling-titles--flexQ-container');
     
-    for (let i = 0; i < 10; i++){
+    for (let i = 0; i < 30; i++){
         const pointSoloQ = document.createElement('span');
         pointSoloQ.textContent = '•';
 
@@ -274,22 +286,29 @@ const buildRankedCard = (queue) => {
 
 function timeConversion(timeInSeconds) {
     const now = new Date();
-    const futurTime = new Date(now.getTime() + timeInSeconds * 1000);
+    const futureTime = new Date(now.getTime() + timeInSeconds * 1000);
 
-    const difference = futurTime - now;
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const secondsRemaining = Math.floor((difference % (1000 * 60 * 60 * 24)) / 1000);
+    const difference = futureTime - now;
 
-    if (days >= 30) {
-        const months = Math.floor(days / 30);
-        return "Il y a " + months + " mois";
-    } else if (days > 0) {
-        return "Il y a " + days + " jours.";
+    const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
+    console.log('Mois : ' + months);
+    const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+    console.log('Jours : ' + days);
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (months >= 1) {
+        return `Il y a ${months} mois`;
+    } else if (days >= 1) {
+        return `Il y a ${days} jours`;
+    } else if (hours >= 1) {
+        return `Il y a ${hours} heures`;
     } else {
-        const minutes = Math.floor(secondsRemaining / 60);
-        return "Il y a " + minutes + " minutes";
+        return `Il y a ${minutes} minutes`;
     }
 }
+
+
 
 const buildMatchesHistoric = () => {
     const matchesHistoricTitle = document.createElement('span');
@@ -303,16 +322,26 @@ const buildMatchesHistoric = () => {
 //     for 
 // }
 
-const buildMatchCard = (match) => {
+const roleConversion = (role) => {
+    return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+}
 
-    const sumName = window.location.href.split("/").slice(-1)[0];
+const calculateCsMin = (minutesTotal, nbCsMax) => {
+    const calcul = (nbCsMax/minutesTotal).toFixed(1);
+    const res = calcul.toString();
+    return res;
+}
+
+const buildMatchCard = (summonerName, match, rankAverageGame) => {
+
+    //Mobile version
 
     const matchCardData = document.createElement('div');
     matchCardData.className = 'match-card--data';
 
     let indexSummoner = -1;
     for (let i = 0; i < match.participants.length; i++) {
-        if (match.participants[i].summonerName === sumName) {
+        if (match.participants[i].summonerName === summonerName) {
             indexSummoner = i;
             break;
         }
@@ -326,8 +355,10 @@ const buildMatchCard = (match) => {
     winOrLoss.className = 'match-card--win-loss';
     if (match.participants[indexSummoner].win != true) {
         winOrLoss.textContent = 'Défaite';
+        matchCardData.classList.add('lossing');
     } else {
         winOrLoss.textContent = 'Victoire';
+        matchCardData.classList.add('winning');
     }
 
     const playedChamp = document.createElement('img');
@@ -335,50 +366,165 @@ const buildMatchCard = (match) => {
     playedChamp.alt = 'Image du champion joué';
     playedChamp.className = 'match-card--played-champ';
 
+
+
     const rolePlayed = document.createElement('span');
     rolePlayed.className = 'match-card--role';
+
+    const rolePlayedDesktop = document.createElement('span');
+    rolePlayedDesktop.className = 'match-card--role-desktop';
+    
     if (match.participants[indexSummoner].role == ""){
-        rolePlayed.textContent = 'AUCUN';
+        rolePlayed.textContent = 'Aucun';
+        rolePlayedDesktop.textContent = 'Aucun';
     } else {
-        rolePlayed.textContent = match.participants[indexSummoner].role;
+        if (match.participants[indexSummoner].role == "UTILITY"){
+            rolePlayed.textContent = 'Support';
+            rolePlayedDesktop.textContent = 'Support';
+        } else {
+            rolePlayed.textContent = roleConversion(match.participants[indexSummoner].role);
+            rolePlayedDesktop.textContent = roleConversion(match.participants[indexSummoner].role);
+        }
     }
+
+
 
     const queuePlayed = document.createElement('span');
     queuePlayed.className = 'match-card--queue-played';
+
+    const queuePlayedDesktop = document.createElement('span');
+    queuePlayedDesktop.className = 'match-card--queue-played-desktop';
+
     if (match.queueId == 440) {
-        queuePlayed.textContent = 'Classé Flexible';
+        queuePlayed.textContent = 'Classée Flexible';
+        queuePlayedDesktop.textContent = 'Classée Flexible';
     } else if (match.queueId == 420) {
-        queuePlayed.textContent = 'Classé Solo';
+        queuePlayed.textContent = 'Classée Solo';
+        queuePlayedDesktop.textContent = 'Classée Solo';
     } else {
-        queuePlayed.textContent = 'Non classé';
+        queuePlayed.textContent = 'Non classée';
+        queuePlayedDesktop.textContent = 'Non classée';
     }
+
+
 
     const happenedTime = document.createElement('span');
     happenedTime.className = 'match-card--happened-time';
+
+    const happenedTimeDesktop = document.createElement('span');
+    happenedTimeDesktop.className = 'match-card--happened-time-desktop';
+
     happenedTime.textContent = timeConversion(match.matchHappened);
+    happenedTimeDesktop.textContent = timeConversion(match.matchHappened);
+
+
 
     const gameDuration = document.createElement('span');
     gameDuration.className = 'match-card--game-duration';
+
+    const gameDurationDesktop = document.createElement('span');
+    gameDurationDesktop.className = 'match-card--game-duration-desktop';
+
     gameDuration.textContent = `${match.matchDuration.minutes}:${match.matchDuration.seconds}`;
+    gameDurationDesktop.textContent = `${match.matchDuration.minutes}:${match.matchDuration.seconds}`;
+
+
 
     const kda = document.createElement('span');
     kda.className = 'match-card--kda';
     kda.textContent = `${match.participants[indexSummoner].kda} KDA`;
 
+    const kdaContainer = document.createElement('div');
+    kdaContainer.className = 'match-card--kda-container-desktop';
+
+    const kdaDesktop = document.createElement('span');
+    kdaDesktop.className = 'match-card--kda-desktop';
+    kdaDesktop.textContent = `${match.participants[indexSummoner].kda} KDA`;
+
+    const killsDeathsAssistsDesktop = document.createElement('span');
+    killsDeathsAssistsDesktop.className = 'match-card--kills-deaths-assists-desktop';
+    killsDeathsAssistsDesktop.textContent = `${match.participants[indexSummoner].kills}/${match.participants[indexSummoner].deaths}/${match.participants[indexSummoner].assists}`;
+
+    kdaContainer.appendChild(kdaDesktop);
+    kdaContainer.appendChild(killsDeathsAssistsDesktop);
+
     const creeps = document.createElement('span');
     creeps.className = 'match-card--cs';
     creeps.textContent = `${match.participants[indexSummoner].totalCs} CS`;
 
+    const creepsContainerDesktop = document.createElement('div');
+    creepsContainerDesktop.className = 'match-card--creeps-container-desktop';
+
+    const creepsDesktop = document.createElement('span');
+    creepsDesktop.className = 'match-card--cs-desktop';
+    creepsDesktop.textContent = `${match.participants[indexSummoner].totalCs} CS`;
+
+    const csMinutes = document.createElement('span');
+    csMinutes.className = 'match-card--cs-min-desktop';
+    csMinutes.textContent = calculateCsMin(match.matchDuration.minutes, match.participants[indexSummoner].totalCs) + ' CS/min';
+
+    creepsContainerDesktop.appendChild(csMinutes);
+    creepsContainerDesktop.appendChild(creepsDesktop);
+
+
+
     const averageRank = document.createElement('span');
     averageRank.className = 'match-card--average-rank';
-    averageRank.textContent = 'Rang moyen';
-    // averageRank.textContent = rankAverage(match);
+    // averageRank.textContent = 'Rang moyen';
+    averageRank.textContent = rankAverageGame;
+
+    const averageRankContainerDesktop = document.createElement('div');
+    averageRankContainerDesktop.className = 'match-card--average-rank-container-desktop';
+
+    const averageRankDesktop = document.createElement('span');
+    averageRankDesktop.className = 'match-card--average-rank-desktop';
+    averageRankDesktop.textContent = 'Niveau moyen';
+
+    const averageRankGameDesktop = document.createElement('span');
+    averageRankGameDesktop.className = 'match-card--average-rank-game-desktop';
+    averageRankGameDesktop.textContent = rankAverageGame;
+
+    averageRankContainerDesktop.appendChild(averageRankDesktop);
+    averageRankContainerDesktop.appendChild(averageRankGameDesktop);
+
+
+    const pointGameInfos1 = document.createElement('span');
+    pointGameInfos1.textContent = '•';
+
+    const pointGameInfos2 = document.createElement('span');
+    pointGameInfos2.textContent = '•';
+
+    const pointGameInfos3 = document.createElement('span');
+    pointGameInfos3.textContent = '•';
+
+    const pointGameInfos1Desktop = document.createElement('span');
+    pointGameInfos1Desktop.textContent = '•';
+
+    const pointGameInfos2Desktop = document.createElement('span');
+    pointGameInfos2Desktop.textContent = '•';
+
+    const pointGameInfos3Desktop = document.createElement('span');
+    pointGameInfos3Desktop.textContent = '•';
+
+    const gameInfosDesktop = document.createElement('div');
+    gameInfosDesktop.className = 'match-card--game-infos-desktop';
+    gameInfosDesktop.appendChild(rolePlayedDesktop);
+    gameInfosDesktop.appendChild(pointGameInfos1Desktop);
+    gameInfosDesktop.appendChild(queuePlayedDesktop);
+    gameInfosDesktop.appendChild(pointGameInfos2Desktop);
+    gameInfosDesktop.appendChild(happenedTimeDesktop);
+    gameInfosDesktop.appendChild(pointGameInfos3Desktop);
+    gameInfosDesktop.appendChild(gameDurationDesktop);
+
 
     const gameInfos = document.createElement('div');
     gameInfos.className = 'match-card--game-infos';
     gameInfos.appendChild(rolePlayed);
+    gameInfos.appendChild(pointGameInfos1);
     gameInfos.appendChild(queuePlayed);
+    gameInfos.appendChild(pointGameInfos2);
     gameInfos.appendChild(happenedTime);
+    gameInfos.appendChild(pointGameInfos3);
     gameInfos.appendChild(gameDuration);
 
     const playerStats = document.createElement('div');
@@ -387,11 +533,19 @@ const buildMatchCard = (match) => {
     playerStats.appendChild(creeps);
     playerStats.appendChild(averageRank);
 
+    const playerStatsDesktop = document.createElement('div');
+    playerStatsDesktop.className = 'match-card--player-stats-desktop';
+    playerStatsDesktop.appendChild(kdaContainer);
+    playerStatsDesktop.appendChild(creepsContainerDesktop);
+    playerStatsDesktop.appendChild(averageRankContainerDesktop);
+
     const gameStatsContainer = document.createElement('div');
     gameStatsContainer.className = 'match-card--game-stats-container';
+    winOrLoss.appendChild(gameInfosDesktop);
     gameStatsContainer.appendChild(winOrLoss);
     gameStatsContainer.appendChild(gameInfos);
     gameStatsContainer.appendChild(playerStats);
+    gameStatsContainer.appendChild(playerStatsDesktop);
 
     matchCardData.appendChild(playedChamp);
     matchCardData.appendChild(gameStatsContainer);
@@ -433,6 +587,7 @@ const fetchSummonerData = async () => {
 
     const fetchSummonerMatches = async () => {
 
+
         const matchesID = summonerData.matches;
         let promises = [];
         
@@ -466,7 +621,7 @@ const fetchSummonerData = async () => {
 
         matchesData.forEach( (match) => {
             console.log(match);
-            const matchCard = buildMatchCard(match);
+            const matchCard = buildMatchCard(summonerData.name, match, summonerData.queues.soloQueue.tier);
             if (matchCard != null) {
                 matchesHistoricCardsContainer.appendChild(matchCard);
             }
@@ -474,10 +629,11 @@ const fetchSummonerData = async () => {
 
 
         );
-
+        
     }
-
     fetchSummonerMatches();
+    playerMatchesRankedContainer.appendChild(rankCardContainer);
+    playerMatchesRankedContainer.appendChild(matchesHistoricCardsContainer);
 }
 
 fetchSummonerData();

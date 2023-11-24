@@ -36,16 +36,21 @@
                 </div>
             </div>
         </div>
-        <div class="ranked-cards--container">
-
+        <div>
+            <a href="#">Vue d'ensemble</a>
+            <a href="#">Commentaires</a>
+            <div class="player-matches-ranked--container">
+                <div class="ranked-cards--container">
+    
+                </div>
+                <div class="matches-historic-cards--container">
+    
+                </div>
+            </div>
+            <div class="spinner-container spinner-visible">
+                <div class="spinner"></div>
+            </div>
         </div>
-        <div class="matches-historic-cards--container">
-
-        </div>
-        <div class="spinner-container spinner-visible">
-            <div class="spinner"></div>
-        </div>
-    </div>
     <script src="/scripts/nav.js"></script>
     <script src="/scripts/search.js"></script>
     <script src="/scripts/summoner-page.js"></script>

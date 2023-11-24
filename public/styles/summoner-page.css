@@ -20,6 +20,10 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     gap: .5rem;
 }
 
+.profilCard--level-follow-btn-container-desktop {
+    display: none;
+}
+
 .profilCard--loading {
     text-align: center;
     font-size: 1.5rem;
@@ -92,7 +96,7 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     font-weight: 600;
 }
 
-.profilCard--followBtn {
+.profilCard--followBtn-nav {
     color: #F4F4F4;
     background: #222222;
     margin-top: 2rem;
@@ -100,6 +104,10 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     border-radius: .3rem;
     border: none;
     font-weight: 600;
+}
+
+.profilCard--followBtn-desktop {
+    display: none;
 }
 
 .profilCard--cardFollow-container {
@@ -115,7 +123,7 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 .scrolling-titles--soloQ-container{
     display: inline-block;
     white-space: nowrap;
-    animation: soloQ 20s infinite linear;
+    animation: soloQ 50s infinite linear;
     overflow: hidden;
 }
 
@@ -129,7 +137,7 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 .scrolling-titles--flexQ-container {
     display: inline-block;
     white-space: nowrap;
-    animation: flexQ 20s infinite linear;
+    animation: flexQ 50s infinite linear;
     overflow: hidden;
 }
 
@@ -249,18 +257,28 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 }
 
 
+.matches-historic-cards--container .matches-historic--title {
+    margin-bottom: 2rem;
+}
+
+.matches-historic--title {
+    font-weight: 650;
+}
+
 .match-card--data {
     display: flex;
     align-items: center;
     gap: 1rem;
     border-bottom: 1px solid #C2C2C2;
     padding: .5rem 0rem;
+    margin-top: 1rem;
 }
 
 .match-card--game-stats-container {
     display: flex;
     flex-direction: column;
-    gap: .15rem;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .match-card--played-champ {
@@ -268,7 +286,6 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     height: 2.5rem;
     border-radius: 50%;
     margin-left: .5rem;
-    border: 2px solid var(--default-dark);
 }
 
 .match-card--win-loss {
@@ -276,11 +293,31 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     font-size: 1rem;
 }
 
+.match-card--data.lossing .match-card--played-champ{
+    border: 1.5px solid #FF4747;
+}
+
+.match-card--data.lossing{
+    border-left: 1.5px solid #FF4747;
+}
+
+.match-card--data.lossing .match-card--win-loss {
+    color: #FF4747;
+}
+
+.match-card--data.winning .match-card--played-champ{
+    border: 1.5px solid var(--default-dark);
+}
+
+.match-card--data.winning{
+    border-left: 1.5px solid var(--default-dark);
+}
+
 .match-card--game-infos {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
     font-size: .75rem;
+    font-weight: 500;
 }
 
 .match-card--player-stats {
@@ -289,4 +326,125 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     gap: 1rem;
     font-size: .75rem;
     font-weight: 550;
+}
+
+.match-card--game-infos-desktop {
+    display: none;
+}
+
+.match-card--player-stats-desktop {
+    display: none;
+}
+
+@media only screen and (min-width: 1024px) {
+    
+    main, .player-matches-ranked--container {
+        padding: var(--desktop-padding);
+        margin-left: 3vw;
+    }
+
+    .profilCard--level-follow-btn-container-desktop {
+        display: flex;
+    }
+
+    .scrolling-titles--soloQ-container span {
+        padding-right: 0.4rem;
+        font-size: 2vw;
+        margin-bottom: 0;
+        display: inline-block;
+    }
+
+    .scrolling-titles--flexQ-container span {
+        padding-right: 0.4rem;
+        font-size: 2vw;
+        margin-bottom: 0;
+        display: inline-block;
+    }
+
+    .player-matches-ranked--container {
+        display: flex;
+    }
+
+    .ranked-cards--container {
+        width: 30%;
+    }
+
+    .matches-historic-cards--container {
+        width: 70%;
+    }
+
+    .match-card--played-champ {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .match-card--game-infos-desktop {
+        color: var(--default-dark);
+    }
+
+    .match-card--data.lossing .match-card--played-champ{
+        border: 2px solid #FF4747;
+    }
+
+    .match-card--data.winning .match-card--played-champ{
+        border: 2px solid;
+    }
+
+    .match-card--game-infos {
+        font-size: small;
+    }
+
+    .match-card--player-stats {
+        font-size: small;
+    }
+
+    .profilCard--followBtn-desktop {
+        display: flex;
+        color: #F4F4F4;
+        background: #222222;
+        padding: .5rem 2rem;
+        border-radius: .3rem;
+        border: none;
+        font-weight: 400;
+    }
+
+    .profilCard--followBtn-nav {
+        display: none;
+    }
+
+    .match-card--game-infos {
+        display: none;
+    }
+
+    .match-card--game-infos-desktop {
+        display: flex;
+        gap: .2rem;
+        font-weight: 300;
+        font-size: .7rem;
+    }
+
+    .match-card--win-loss {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .match-card--player-stats {
+        display: none;
+    }
+
+    .match-card--player-stats-desktop {
+        display: flex;
+        gap: 8rem;
+        align-items: center;
+        font-size: .8rem;
+    }
+
+    .match-card--kda-container-desktop, .match-card--creeps-container-desktop, .match-card--average-rank-container-desktop {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .match-card--cs-desktop, .match-card--kills-deaths-assists-desktop, .match-card--average-rank-game-desktop {
+        font-weight: 600;
+    }
 }
