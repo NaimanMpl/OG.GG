@@ -186,6 +186,10 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     animation: spin 1s infinite ease;
 }
 
+.overview-comments {
+    color: var(--default-dark);
+}
+
 @keyframes spin {
     0% {
         transform: translate(-50%, -50%) rotate(0);

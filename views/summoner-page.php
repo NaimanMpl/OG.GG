@@ -37,8 +37,8 @@
             </div>
         </div>
         <div>
-            <a href="#">Vue d'ensemble</a>
-            <a href="#">Commentaires</a>
+            <a href="#" class="overview-comments">Vue d'ensemble</a>
+            <a href="#" class="overview-comments">Commentaires</a>
             <div class="player-matches-ranked--container">
                 <div class="ranked-cards--container">
     
