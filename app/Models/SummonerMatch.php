@@ -74,7 +74,7 @@ class SummonerMatch {
                 "championLevel" => $summoner["champLevel"],
                 "win" => $summoner["win"],
                 "role" => $summoner["teamPosition"],
-                "kda" => ($summoner["kills"] + $summoner["deaths"] + $summoner["assists"] / 3) != null ? sprintf("%.2f", ($summoner["kills"] + $summoner["deaths"] + $summoner["assists"] / 3)) : 0,
+                "kda" => ($summoner["challenges"]["kda"]),
                 "kills" => $summoner["kills"],
                 "deaths" => $summoner["deaths"],
                 "assists" => $summoner["assists"],

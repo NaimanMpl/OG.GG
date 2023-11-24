@@ -432,14 +432,15 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
 
     const kda = document.createElement('span');
     kda.className = 'match-card--kda';
-    kda.textContent = `${match.participants[indexSummoner].kda} KDA`;
+    const tempKDA = match.participants[indexSummoner].kda;
+    kda.textContent = tempKDA.toFixed(1) + ' KDA';
 
     const kdaContainer = document.createElement('div');
     kdaContainer.className = 'match-card--kda-container-desktop';
 
     const kdaDesktop = document.createElement('span');
     kdaDesktop.className = 'match-card--kda-desktop';
-    kdaDesktop.textContent = `${match.participants[indexSummoner].kda} KDA`;
+    kdaDesktop.textContent = `${match.participants[indexSummoner].kda.toFixed(1)} KDA`;
 
     const killsDeathsAssistsDesktop = document.createElement('span');
     killsDeathsAssistsDesktop.className = 'match-card--kills-deaths-assists-desktop';
