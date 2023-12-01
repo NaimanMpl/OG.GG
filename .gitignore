@@ -2,3 +2,5 @@ vendor/
 public/.env
 public/.htaccess
 .DS_STORE
+public/riot.txt
+chatserver/node_modules/
