@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/styles/search.css">
     <link rel="stylesheet" href="/styles/notfound.css">
     <link rel="stylesheet" href="/styles/darkheader.css">
+    <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
 </head>
 <body>
     <?php include "search.php" ?>

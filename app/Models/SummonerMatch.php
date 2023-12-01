@@ -59,7 +59,7 @@ class SummonerMatch {
         $this->queueId = $matchData["info"]["queueId"];
         $this->matchDuration->add(new DateInterval('PT' . $matchData["info"]["gameDuration"] . 'S'));
         $this->matchDuration->format('i:s');
-        $this->matchTimestamp->setTimestamp($matchData["info"]["gameStartTimestamp"]);
+        $this->matchTimestamp->setTimestamp((int) ($matchData["info"]["gameStartTimestamp"] / 1000));
         $this->matchTimestamp->format("Y-m-d H:i:s");
         $diff = $currentDate->diff($this->matchTimestamp);
         $this->diffInSeconds = $diff->s + ($diff->i * 60) + ($diff->h * 3600) + ($diff->d * 86400);
@@ -74,7 +74,7 @@ class SummonerMatch {
                 "championLevel" => $summoner["champLevel"],
                 "win" => $summoner["win"],
                 "role" => $summoner["teamPosition"],
-                "kda" => ($summoner["kills"] + $summoner["deaths"] + $summoner["assists"] / 3) != null ? sprintf("%.2f", ($summoner["kills"] + $summoner["deaths"] + $summoner["assists"] / 3)) : 0,
+                "kda" => ($summoner["challenges"]["kda"]),
                 "kills" => $summoner["kills"],
                 "deaths" => $summoner["deaths"],
                 "assists" => $summoner["assists"],

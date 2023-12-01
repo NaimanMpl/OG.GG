@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OG.GG | S'inscrire</title>
     <link rel="stylesheet" href="/styles/register.css">
+    <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
 </head>
 <body>
     <main class="register-container">

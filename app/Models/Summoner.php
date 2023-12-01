@@ -21,7 +21,7 @@ class Summoner {
         $this->name = $name;
         $this->fetchSummonerData();
         $this->fetchRankedData();
-        $this->fetchMatchHistoryData(0, 20);
+        $this->fetchMatchHistoryData(0, 10);
     }
 
     public function fetchSummonerData() {
