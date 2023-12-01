@@ -291,9 +291,7 @@ function timeConversion(timeInSeconds) {
     const difference = futureTime - now;
 
     const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
-    console.log('Mois : ' + months);
     const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-    console.log('Jours : ' + days);
     const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -591,6 +589,9 @@ const fetchSummonerData = async () => {
 
         const matchesID = summonerData.matches;
         let promises = [];
+        const spinnerHistoric = document.createElement('div');
+        spinnerHistoric.className = 'spinner';
+        document.querySelector('.spinner--historic-container').appendChild(spinnerHistoric);
         
         matchesID.forEach( matchID => {
             promises.push( fetch (
@@ -622,6 +623,12 @@ const fetchSummonerData = async () => {
 
         matchesData.forEach( (match) => {
             console.log(match);
+
+            document.querySelector('.spinner--historic-container').classList.add('spinner-visible');
+
+            document.querySelector('.spinner--historic-container').classList.remove('spinner-visible');
+            document.querySelector('.spinner--historic-container').classList.add('spinner-hidden');
+
             const matchCard = buildMatchCard(summonerData.name, match, summonerData.queues.soloQueue.tier);
             if (matchCard != null) {
                 matchesHistoricCardsContainer.appendChild(matchCard);

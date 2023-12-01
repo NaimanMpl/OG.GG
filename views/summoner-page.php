@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
     <title>
         <?php
             $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
@@ -44,7 +45,10 @@
     
                 </div>
                 <div class="matches-historic-cards--container">
-    
+
+                    <div class="spinner--historic-container">
+                        
+                    </div>
                 </div>
             </div>
             <div class="spinner-container spinner-visible">

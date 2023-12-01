@@ -154,6 +154,13 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     transform: translate(-50%, -50%);
 }
 
+.spinner--historic-container {
+    position: relative;
+    left: 100%;
+    top: 25%;
+    transform: translate(-50%, -50%);
+}
+
 .spinner-visible {
     display: block;
 }

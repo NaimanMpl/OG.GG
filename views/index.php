@@ -9,6 +9,7 @@ session_start();
     <title>Accueil</title>
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="stylesheet" href="/styles/search.css">
+    <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
 </head>
 <body>
     <?php include "search.php" ?>

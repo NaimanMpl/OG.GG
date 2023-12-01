@@ -9,6 +9,7 @@ session_start();
     <title>OG.GG | 404</title>
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="stylesheet" href="/styles/notfound.css">
+    <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>
