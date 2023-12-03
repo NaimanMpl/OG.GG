@@ -208,6 +208,18 @@ class UserController {
             return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
         }
     }
+
+    public function getUser(Request $request, Response $response) {
+
+        $user = [
+            "userId" => $_SESSION["userId"],
+            "email" => $_SESSION["email"],
+            "username" => $_SESSION["username"],
+        ];
+
+        $response->getBody()->write(json_encode($user));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
 
 ?>

@@ -10,11 +10,25 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-
-    console.log(`User ${socket.id}`);
-
+    const room = socket.handshake.query.room;
+    console.log(room);
+    socket.join(room);
+    socket.to(room).emit('message', 'Un mec vient de rejoindre !');
     socket.on('message', (data) => {
-        io.emit('message', `${socket.id.substring(0, 5)}: ${data}`);
+        const currentDate = new Date();
+        let hours = currentDate.getHours();
+        let minutes = currentDate.getMinutes();
+
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+
+        const response = {
+            time: hours + ':' + minutes,
+            login: data.username,
+            text: data.text
+        }
+
+        io.to(room).emit('message', response);
     });
 });
 

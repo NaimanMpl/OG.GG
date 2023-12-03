@@ -6,16 +6,15 @@ use App\Controllers\UserController;
 use App\Models\Database;
 use PDOException;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use App\ErrorHandler;
-use Slim\Psr7\Response as SlimResponse;
+use Slim\Psr7\Response;
 
 class AuthMiddleware {
 
     public function handleLogin(Request $request, RequestHandler $handler): Response {
         $userData = json_decode($request->getBody(), true);
-        $response = new SlimResponse();
+        $response = new Response();
 
         if (!isset($userData["email"]) || empty($userData["email"]) || !isset($userData["password"]) | empty($userData["password"])) {
             return ErrorHandler::sendError($response, 400, "Identifiant ou mot de passe incorrect.");
@@ -57,7 +56,7 @@ class AuthMiddleware {
 
     public function handleRegister(Request $request, RequestHandler $handler): Response {
         $userData = json_decode($request->getBody(), true);
-        $response = new SlimResponse();
+        $response = new Response();
 
         if (!isset($userData['username']) || empty($userData['username'])) {
             return ErrorHandler::sendError($response, 400, "Veuillez renseigner un nom d'utilisateur");    
@@ -91,7 +90,7 @@ class AuthMiddleware {
     }
 
     public function verifyToken(Request $request, RequestHandler $handler): Response {
-        $response = new SlimResponse();
+        $response = new Response();
         try {
             $database = new Database();
             $conn = $database->getConnection();
@@ -109,6 +108,17 @@ class AuthMiddleware {
         } catch (PDOException $e) {
             return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
         }
+    }
+
+    public function handleAuth(Request $request, RequestHandler $handler): Response {
+        session_start();
+        $response = new Response();
+        
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            return $response->withStatus(301)->withHeader('Location', '/');
+        }
+
+        return $handler->handle($request);
     }
 
 };

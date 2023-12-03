@@ -12,7 +12,7 @@
                     <?php
                     if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
                        echo '
-                       <img class="nav-profile-icon" src="/img/test.png" alt="Account Icon">
+                       <img class="nav-profile-icon" src="/img/default-pp.png" alt="Account Icon">
                        <div class="nav-profile-credentials">
                            <p class="nav-profile--username">'.$_SESSION['username'].'</p>
                            <p class="nav-profile--email">'.$_SESSION['email'].'</p>
@@ -29,12 +29,16 @@
                     }
                     ?>
                 </div>
-                <img class="nav-profile--settings" src="/img/settings.svg" alt="Paramètres">
+                <?php
+                if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+                    echo '<img class="nav-profile--settings" src="/img/settings.svg" alt="Paramètres">';
+                }
+                ?>
             </div>
             <ul>
                 <li><a href="/leaderboard">Classement</a></li>
-                <li><a href="#">Chat</a></li>
-                <li><a href="#">À propos</a></li>
+                <li><a href="/chat">Chat</a></li>
+                <li><a href="/about">À propos</a></li>
             </ul>
             <?php
             if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
