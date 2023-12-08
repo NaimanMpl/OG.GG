@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class RegisterController extends Controller {
 
-    public function render(Request $request, Response $response) {
+    public function render(Request $request, Response $response, array $args) {
         session_start();
         if (isset($_SESSION["username"]) || !empty($_SESSION["username"])) {
             return $response->withStatus(301)->withHeader('Location', '/');

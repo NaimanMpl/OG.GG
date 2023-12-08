@@ -211,14 +211,32 @@ class UserController {
 
     public function getUser(Request $request, Response $response) {
 
-        $user = [
-            "userId" => $_SESSION["userId"],
-            "email" => $_SESSION["email"],
-            "username" => $_SESSION["username"],
-        ];
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "SELECT summoner_name, profileiconid FROM follows JOIN summoners ON follows.summoner_name=summoners.name WHERE user_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($_SESSION["userId"]));
 
-        $response->getBody()->write(json_encode($user));
-        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+            $results = $stmt->fetchAll();
+            $followers = [];
+
+            foreach ($results as $follower) {
+                $followers[] = ["summonerName" => $follower['summoner_name'], "profileIconId" => $follower['profileiconid']];
+            }
+
+            $user = [
+                "userId" => $_SESSION["userId"],
+                "email" => $_SESSION["email"],
+                "username" => $_SESSION["username"],
+                "followers" => $followers
+            ];
+
+            $response->getBody()->write(json_encode($user));
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        } catch (PDOException $e) {
+            return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
+        }
     }
 }
 

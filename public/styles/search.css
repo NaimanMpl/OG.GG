@@ -22,6 +22,11 @@
 #blur-wrapper.blur > * {
     transition: transform .5s ease;
     transform: scale(1.2);
+    filter: blur(20px);
+}
+
+.black-body {
+    background: var(--default-dark);
 }
 
 #search-form .search-container {

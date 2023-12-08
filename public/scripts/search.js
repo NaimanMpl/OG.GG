@@ -20,6 +20,7 @@ const handleSearchClick = () => {
     form.style.opacity = '1';
     form.classList.add('active');
     blurWrapper.classList.add('blur');
+    document.querySelector('body').classList.add('black-body');
 }
 
 const buildSummonerCard = (summonerName, profileIconID) => {
@@ -32,7 +33,7 @@ const buildSummonerCard = (summonerName, profileIconID) => {
     resultCard.className = 'search-result';
     resultCard.classList.add('active');
     resultCard.classList.add('real-result');
-    const profileIconLink = `https://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${profileIconID}.png`;
+    const profileIconLink = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/profileicon/${profileIconID}.png`;
     resultCard.style.background = `url(${profileIconLink})`;
     resultCard.style.backgroundPosition = 'center';
     resultCard.style.backgroundSize = 'cover';
@@ -124,8 +125,16 @@ const closeNavMenu = () => {
     form.classList.remove('active');
     blurWrapper.classList.remove('blur');
     formWrapper.style.zIndex = '-1';
+    document.querySelector('body').classList.remove('black-body');
+}
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+
+    window.location.href = `/summoner/${summonerInput.value}`;
 }
 
 searchBtn.addEventListener('click', handleSearchClick);
 summonerInput.addEventListener('input', handleTyping);
 closeNav.addEventListener('click', closeNavMenu);
+form.addEventListener('submit', handleSubmit);

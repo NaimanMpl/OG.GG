@@ -10,7 +10,7 @@ use App\Controller\Controllers;
 
 class HomeController extends Controller {
 
-    public function render(Request $request, Response $response) {
+    public function render(Request $request, Response $response, array $args) {
         session_start();
         $renderer = new PhpRenderer('../views');
         return $renderer->render($response->withStatus(200), 'index.php');

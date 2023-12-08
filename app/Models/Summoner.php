@@ -19,6 +19,7 @@ class Summoner {
 
     public function __construct(string $name) {
         $this->name = $name;
+        $this->matchesId = [];
         $this->fetchSummonerData();
         $this->fetchRankedData();
         $this->fetchMatchHistoryData(0, 10);

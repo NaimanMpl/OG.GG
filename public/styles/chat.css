@@ -67,6 +67,7 @@ li {
     align-items: flex-start;
     gap: 1.5rem;
     width: 100%;
+    align-self: end;
 }
 
 .message-form--pp {

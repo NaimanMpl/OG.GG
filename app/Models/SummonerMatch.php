@@ -50,6 +50,7 @@ class SummonerMatch {
         }
 
         if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+            var_dump(curl_getinfo($ch, CURLINFO_HTTP_CODE));
             throw new MatchNotFoundException('Le match '.urldecode($matchId)." n'a pas pu être chargé ou n'existe pas.");
         }
 

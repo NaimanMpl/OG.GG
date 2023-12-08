@@ -1,12 +1,19 @@
 <header>
     <a href="/" class="header--title">OG.GG</a>
+    <?php
+    if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+        echo '<div class="nav-logged--info" style="display: flex; gap: .7rem; align-items: center;">';
+        echo '<img style="max-width: 30px;" class="nav-profile-icon" src="/img/default-pp.png" alt="Paramètres">';
+        echo "<span style='color: var(--white); font-weight: 500;'>".$_SESSION["username"]."</span>";
+        echo "</div>";
+    }
+    ?>
     <nav>
         <div class="nav--cta">
             <img id="nav--search-btn" src="/img/search.svg" alt="Rechercher" class="nav--cta-search nav-cta--icon">
             <img src="/img/hamburger-menu.svg" alt="Menu" class="nav--cta-mobile-burger nav-cta--icon">
         </div>
         <div class="nav--mobile-link-container hidden">
-            
             <div class="nav-profile">
                 <div class="nav-profile--infos">
                     <?php
@@ -38,6 +45,7 @@
             <ul>
                 <li><a href="/leaderboard">Classement</a></li>
                 <li><a href="/chat">Chat</a></li>
+                <li><a href="/followers">Compte suivis</a></li>
                 <li><a href="/about">À propos</a></li>
             </ul>
             <?php
@@ -47,4 +55,5 @@
             ?>
         </div>
     </nav>
+    
 </header>

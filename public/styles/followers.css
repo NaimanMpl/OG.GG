@@ -1,0 +1,76 @@
+main {
+    padding: var(--desktop-padding);
+}
+
+.followers-container {
+    display: inline-grid;
+    grid-template-columns: repeat(3, auto);
+    column-gap: 2rem;
+    row-gap: 2rem;;
+    margin-top: 2rem;
+}
+
+.follow-card {
+    padding: 1.2rem;
+    background: #fff;
+    display: flex;
+    gap: 1rem;
+    color: var(--default-dark);
+    position: relative;
+}
+
+.follow-card::after {
+    content: "";
+    position: absolute;
+    left: .8rem;
+    top: .8rem;
+    width: 100%;
+    height: 100%;
+    background-color: var(--light-gray);
+    z-index: -1;
+}
+
+.follow-card img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.follow-card--infos {
+    display: flex;
+    flex-direction: column;
+}
+
+.follow-card-infos--wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.follow-card-infos--container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.follow-card--region {
+    color: var(--white);
+    background: var(--default-dark);
+    padding: .3rem .5rem;
+    border-radius: .3rem;
+    font-size: .8rem !important;
+}
+
+.follow-card span, .follow-card p {
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.follow-card--description {
+    margin-top: .5rem;
+    width: 250px;
+    overflow: hidden;
+}
+
+.follow-card--date {
+    color: var(--light-gray);
+}

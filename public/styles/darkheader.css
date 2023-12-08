@@ -9,3 +9,7 @@
 .nav--desktop-link-container li a {
     color: var(--default-dark) !important;
 }
+
+.nav-logged--info span {
+    color: var(--default-dark) !important;
+}

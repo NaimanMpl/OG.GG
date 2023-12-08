@@ -306,11 +306,11 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 }
 
 .match-card--data.lossing .match-card--played-champ{
-    border: 1.5px solid #FF4747;
+    border: 3px solid #FF4747;
 }
 
 .match-card--data.lossing{
-    border-left: 1.5px solid #FF4747;
+    border-left: 3px solid #FF4747;
 }
 
 .match-card--data.lossing .match-card--win-loss {
@@ -318,11 +318,11 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 }
 
 .match-card--data.winning .match-card--played-champ{
-    border: 1.5px solid var(--default-dark);
+    border: 3px solid var(--default-dark);
 }
 
 .match-card--data.winning{
-    border-left: 1.5px solid var(--default-dark);
+    border-left: 3px solid var(--default-dark);
 }
 
 .match-card--game-infos {
@@ -348,11 +348,31 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     display: none;
 }
 
+.overview-comments {
+    display: none;
+}
+
+.footer-container {
+    display: none;
+}
+
 @media only screen and (min-width: 1024px) {
     
     main, .player-matches-ranked--container {
         padding: var(--desktop-padding);
         margin-left: 3vw;
+    }
+
+    .ranked-card--title {
+        font-size: 1.1rem;
+    }
+
+    .match-card--win-loss {
+        font-size: 1.2rem;
+    }
+
+    .match-card--player-stats-desktop span {
+        font-size: 1rem;
     }
 
     .profilCard--level-follow-btn-container-desktop {
@@ -403,11 +423,11 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     }
 
     .match-card--game-infos {
-        font-size: small;
+        font-size: 1rem;
     }
 
     .match-card--player-stats {
-        font-size: small;
+        font-size: 1rem;
     }
 
     .profilCard--followBtn-desktop {
@@ -433,7 +453,7 @@ main, .ranked-cards--container, .matches-historic-cards--container {
         display: flex;
         gap: .2rem;
         font-weight: 300;
-        font-size: .7rem;
+        font-size: 1.1rem;
     }
 
     .match-card--win-loss {

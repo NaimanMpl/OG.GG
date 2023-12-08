@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\ChatController;
 use App\Controllers\MatchController;
+use App\Middlewares\CaptchaMiddleware;
 use App\Middlewares\ChatMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -45,7 +46,7 @@ $app->get('/verify', UserController::class . ":activateAccount")->add(AuthMiddle
 $app->get('/success', RegisterController::class . ":handleAccountCreation");
 
 $app->get('/register', RegisterController::class . ":render");
-$app->post('/user/register', UserController::class . ":register")->add(AuthMiddleware::class .":handleRegister");
+$app->post('/user/register', UserController::class . ":register")->add(AuthMiddleware::class . ":handleRegister")->add(CaptchaMiddleware::class . ":verifyCaptcha");
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
 $app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
@@ -56,12 +57,13 @@ $app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
 $app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
-$app->get('/summoners/matchs/updateLeaderboard', ChampionController::class . ":updateLeaderboard");
+$app->get('/champions/updateleaderboard', ChampionController::class . ":updateLeaderboard");
 $app->get('/summoner/{name}', SummonerController::class . ":render");
 
 $app->get('/leaderboard', ChampionController::class . ":render");
 $app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
 $app->get('/matches/{matchId}', MatchController::class . ':getMatch');
+$app->get('/followers', PageController::class . ":renderFollowers");
 
 $app->group('/chat', function (RouteCollectorProxy $group) {
     $group->get('', PageController::class . ":renderChat");

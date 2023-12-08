@@ -9,6 +9,7 @@
             $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
             $arrayLink = explode("/", $link);
             echo $arrayLink[count($arrayLink) -1];
+            
         ?>
     </title>
     <link rel="stylesheet" href="/styles/style.css">

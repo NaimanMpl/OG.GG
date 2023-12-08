@@ -6,6 +6,7 @@
     <title>OG.GG | S'inscrire</title>
     <link rel="stylesheet" href="/styles/register.css">
     <link rel="shortcut icon" href="/img/og-gg.ico" type="image/x-icon">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <main class="register-container">
@@ -21,6 +22,7 @@
             <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--password-dialog"></p>
             <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirmer le mot de passe">
             <p style="font-size: 0.7rem; margin-top: .2rem" class="register-container--confirm-password-dialog"></p>
+            <div class="g-recaptcha" data-sitekey="6LeRzCopAAAAAB-cLmVbvGzS0-vRVr_HN42fHvs_"></div>
             <button id="registerbtn" type="submit">
                 <span class="registerbtn--text">S'inscrire</span>
             </button>

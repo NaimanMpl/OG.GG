@@ -14,8 +14,12 @@ class PageController {
         $this->renderer = new PhpRenderer('../views');
     }
 
-    public function renderChat(Request $request, Response $response) {
+    public function renderChat(Request $request, Response $response, array $args) {
         return $this->renderer->render($response->withStatus(200), 'chat.php');
+    }
+
+    public function renderFollowers(Request $request, Response $response, array $args) {
+        return $this->renderer->render($response->withStatus(200), 'followers.php');
     }
 
 }

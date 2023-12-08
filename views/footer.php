@@ -6,6 +6,7 @@
             <li><a href="/">Accueil</a></li>
             <li><a href="/leaderboard">Classement</a></li>
             <li><a href="/chat">Chat</a></li>
+            <li><a href="/followers">Compte suivis</a></li>
         </ul>
     </div>
     <div class="footer-about">

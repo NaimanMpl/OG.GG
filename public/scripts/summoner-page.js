@@ -372,7 +372,7 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
     }
 
     const playedChamp = document.createElement('img');
-    playedChamp.src = `https://ddragon.leagueoflegends.com/cdn/13.22.1/img/champion/${match.participants[indexSummoner].championName}.png`;
+    playedChamp.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${match.participants[indexSummoner].championName}.png`;
     playedChamp.alt = 'Image du champion joué';
     playedChamp.className = 'match-card--played-champ';
 
@@ -692,9 +692,9 @@ const fetchSummonerData = async () => {
                 matchesHistoricCardsContainer.appendChild(matchCard);
             }
         }
-
-
         );
+        document.querySelector('.footer-container').style.display = 'grid';
+
         
     }
     fetchSummonerMatches();

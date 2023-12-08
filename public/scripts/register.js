@@ -22,6 +22,12 @@ const handleRegister = async (e) => {
 
     registerBtn.classList.add('loading');
 
+    const captchaResponse = document.getElementById('g-recaptcha-response').value;
+
+    if (captchaResponse.length === 0) {
+        return;
+    }
+
     const response = await fetch(
         '/user/register',
         {
@@ -34,7 +40,8 @@ const handleRegister = async (e) => {
                 email: emailInput.value, 
                 username: usernameInput.value, 
                 password: passwordInput.value,
-                confirmPassword: confirmPasswordInput.value
+                confirmPassword: confirmPasswordInput.value,
+                captcha: captchaResponse
             })
         }
     );

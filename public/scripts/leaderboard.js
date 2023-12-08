@@ -34,7 +34,7 @@ const buildLeaderboardCard = (index, championName, wins, looses, rank) => {
     cardName.textContent = championName;
 
     const cardIcon = document.createElement('img');
-    cardIcon.src = `https://ddragon.leagueoflegends.com/cdn/13.22.1/img/champion/${championName}.png`;
+    cardIcon.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${championName}.png`;
     cardIcon.alt = `${championName}`;
     cardIcon.className = 'leaderboard-card--icon';
 
