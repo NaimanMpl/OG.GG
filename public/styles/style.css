@@ -411,11 +411,37 @@ main svg {
     max-width: 55px;
 }
 
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: var(--mobile-padding);
+}
+
+.footer-container p {
+    font-weight: 600;
+    margin-bottom: .25rem;
+}
+
+.footer-container a {
+    color: var(--default-dark);
+    font-weight: lighter;
+}
+
+.footer-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: .5rem;
+}
+
 @media only screen and (min-width: 1024px) {
     header {
         padding: 1.5rem 5rem;
         justify-content: flex-start;
         gap: 2rem;
+    }
+
+    .footer-container {
+        padding: 1.5rem 5rem;
     }
 
     #hero {

@@ -20,6 +20,7 @@
             <span>Retourner à <a href="/">l'accueil</a></span>
         </main>
     </div>
+    <?php include "footer.php" ?>
     <script src="/scripts/search.js"></script>
 </body>
 </html>
