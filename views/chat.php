@@ -61,9 +61,6 @@ function getRoom(string $url) {
                     <article class="chat-online-members">
                         <h3>Membres connectés</h3>
                         <div class="chat-online-members--container">
-                            <div class="member-card">
-                                <span>ZelphiX</span>
-                            </div>
                         </div>
                     </article>
                 </div>

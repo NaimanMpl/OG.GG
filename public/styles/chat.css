@@ -123,7 +123,11 @@ li {
     all: unset;
     padding-bottom: .5rem;
     border-bottom: 1px solid var(--dark-gray);
-    width: 100%;    
+    width: 100%;
+}
+
+.announce-message {
+    color: var(--dark-gray);
 }
 
 @media only screen and (max-width: 1024px) {
