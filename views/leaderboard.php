@@ -20,6 +20,7 @@
                 
             </div>
         </main>
+        <?php include "footer.php" ?>
     </div>
     <script src="/scripts/search.js"></script>
     <script src="/scripts/leaderboard.js"></script>

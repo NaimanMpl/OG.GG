@@ -4,6 +4,18 @@ const rankCardContainer = document.querySelector('.ranked-cards--container');
 const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
 const playerMatchesRankedContainer = document.querySelector('.player-matches-ranked--container');
 
+const handleFollow = async (summonerName, button) => {
+
+    button.textContent = 'Chargement...';
+    const response = await fetch (
+        `/user/follow/${summonerName}`,
+        {
+            method: 'GET',
+        }
+    )
+    button.textContent = 'Suivi';
+}
+
 const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
     
     const summonerProfilePictureWrapper = document.createElement('div');
@@ -57,8 +69,9 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     level.textContent = `${accountLevel}`;
 
     const followBtnDesktop = document.createElement('button');
-    followBtnDesktop.className = 'profilCard--followBtn-desktop';
+    followBtnDesktop.classList = 'profilCard--followBtn-desktop';
     followBtnDesktop.textContent = 'Suivre';
+    followBtnDesktop.addEventListener('click', () => { handleFollow(summonerName, followBtnDesktop) });
 
     levelContainer.appendChild(levelText);
     levelContainer.appendChild(level);

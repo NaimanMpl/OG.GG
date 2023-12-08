@@ -55,6 +55,7 @@
                 <div class="spinner"></div>
             </div>
         </div>
+    <?php include "footer.php" ?>
     <script src="/scripts/nav.js"></script>
     <script src="/scripts/search.js"></script>
     <script src="/scripts/summoner-page.js"></script>
