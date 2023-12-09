@@ -4,6 +4,8 @@ const rankCardContainer = document.querySelector('.ranked-cards--container');
 const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
 const playerMatchesRankedContainer = document.querySelector('.player-matches-ranked--container');
 
+let spellData = null;
+
 const handleFollow = async (summonerName, button) => {
 
     button.textContent = 'Chargement...';
@@ -22,7 +24,7 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     summonerProfilePictureWrapper.className = 'profileCard-cardIcon--wrapper';
     const summonerProfilPicture = document.createElement('img');
     summonerProfilPicture.className = 'profilCard--icon';
-    summonerProfilPicture.src = `https://ddragon.leagueoflegends.com/cdn/13.20.1/img/profileicon/${profilPicture}.png`;
+    summonerProfilPicture.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/profileicon/${profilPicture}.png`;
     summonerProfilPicture.alt = 'Photo de profil du joueur';
 
     const forms = [
@@ -207,6 +209,15 @@ const buildRankedCards = (rankSoloQ, rankFlexQ) => {
     
 }
 
+const getSummonerSpellImage = (id) => {
+    if (spellData === null) return null;
+    for (const [key, value] of Object.entries(spellData.data)) {
+        if (parseInt(value.key) === id) {
+            return value.id;
+        }
+    }
+}
+
 const winrateValue = (wins, losses) => {
     let winrate = 0;
     if (wins == 0 && losses == 0){
@@ -328,10 +339,6 @@ const buildMatchesHistoric = () => {
     return matchesHistoricTitle;
 }
 
-// const rankAverage = (match) => {
-//     for 
-// }
-
 const roleConversion = (role) => {
     return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
 }
@@ -340,6 +347,188 @@ const calculateCsMin = (minutesTotal, nbCsMax) => {
     const calcul = (nbCsMax/minutesTotal).toFixed(1);
     const res = calcul.toString();
     return res;
+}
+
+const buildProgressBar = (ratio, color) => {
+    const progressBar = document.createElement('div');
+    progressBar.className = "match-card--progress-bar";
+    progressBar.style.width = `${ratio}%`;
+    progressBar.style.height = '2px';
+    progressBar.style.borderRadius = '2px';
+    progressBar.style.background = color;
+
+    return progressBar;
+}
+
+const buildTeamPlayerCard = (container, championName, summoner1Id, summoner2Id, summonerName, summonerLevel, damages, visionScore, golds, objectsIds, win, maxDamage, maxGolds) => {
+    const summonerCard = document.createElement('div');
+    summonerCard.className = "match-card--team-card";
+
+    const summonerChampIcon = document.createElement('img');
+    summonerChampIcon.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${championName}.png`;
+    summonerChampIcon.className = "match-card-summoner--icon";
+
+    if (!win) summonerChampIcon.style.border = '2px solid #FF4747';
+
+    const summoner1Icon = document.createElement('img');
+    summoner1Icon.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${getSummonerSpellImage(summoner1Id)}.png`;
+    summoner1Icon.className = "match-card-summoner--summoner";
+
+    const summoner2Icon = document.createElement('img');
+    summoner2Icon.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${getSummonerSpellImage(summoner2Id)}.png`;
+    summoner2Icon.className = "match-card-summoner--summoner";
+
+    const summonerIconsContainer = document.createElement('div');
+    summonerIconsContainer.className = 'match-card-summoners-icon--container';
+    summonerIconsContainer.appendChild(summoner1Icon);
+    summonerIconsContainer.appendChild(summoner2Icon);
+
+    const summonerNameText = document.createElement('span');
+    summonerNameText.className = 'match-card--summonername';
+    summonerNameText.textContent = summonerName;
+
+    const summonerLevelText = document.createElement('span');
+    summonerLevelText.textContent = `Niveau ${summonerLevel}`;
+
+    const summonerVisionScore = document.createElement('span');
+    summonerVisionScore.textContent = visionScore;
+
+    const summonerDamages = document.createElement('span');
+    summonerDamages.textContent = damages;
+
+    const damageBar = buildProgressBar((damages / maxDamage) * 100, "var(--default-dark)");
+    const fullBar = buildProgressBar(100, "var(--light-gray)");
+
+    const goldBar = buildProgressBar((golds / maxGolds) * 100, "var(--default-dark)");
+    const fullGoldBar = buildProgressBar(100, "var(--light-gray)");
+
+    damageBar.style.position = 'absolute';
+    damageBar.style.left = '0';
+
+    fullBar.style.position = 'absolute';
+    fullBar.style.left = '0';
+
+    fullGoldBar.style.position = 'absolute';
+    fullGoldBar.style.left = '0';
+
+    goldBar.style.position = 'absolute';
+    goldBar.style.left = '0';
+
+    const damageBarContainer = document.createElement('div');
+    damageBarContainer.className = 'match-card-bar--container';
+    damageBarContainer.appendChild(fullBar);
+    damageBarContainer.appendChild(damageBar);
+
+    summonerDamages.appendChild(damageBarContainer);
+    
+    const summonerGolds = document.createElement('span');
+    summonerGolds.textContent = golds;
+    
+    const goldsBarContainer = document.createElement('div');
+    goldsBarContainer.className = 'match-card-bar--container';
+    goldsBarContainer.appendChild(fullGoldBar);
+    goldsBarContainer.appendChild(goldBar);
+
+    summonerGolds.appendChild(goldsBarContainer);
+
+    const itemsContainer = document.createElement('div');
+    itemsContainer.className = 'match-card--items-container';
+
+    objectsIds.forEach((id) => {
+        if (id !== 0) {
+            const item = document.createElement('img');
+            item.className = "match-card--item";
+            item.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/item/${id}.png`;
+            itemsContainer.appendChild(item);
+        }
+    });
+
+    const summonerInfos = document.createElement('div');
+    summonerInfos.className = 'match-card-team-player--infos';
+
+    const summonerNameContainer = document.createElement('div');
+    summonerNameContainer.className = 'match-card-summoner-infos--container';
+    summonerNameContainer.appendChild(summonerNameText);
+    summonerNameContainer.appendChild(summonerLevelText);
+
+    summonerInfos.appendChild(summonerChampIcon);
+    summonerInfos.appendChild(summonerIconsContainer);
+    summonerInfos.appendChild(summonerNameContainer);
+
+    container.appendChild(summonerInfos);
+    container.appendChild(summonerDamages);
+    container.appendChild(summonerVisionScore);
+    container.appendChild(summonerGolds);
+    container.appendChild(itemsContainer);
+
+    const line = document.createElement('div');
+    line.className = 'line';
+    container.appendChild(line);
+
+}
+
+const buildTeamTable = (match, start, end, title) => {
+    const teamHeader = document.createElement('div');
+    teamHeader.className = 'match-card--team-container';
+
+    const teamTitle = document.createElement('span');
+    teamTitle.className = 'match-card--team-title';
+    if (title.includes('Défaite')) {
+        const victoryTitle = document.createElement('span');
+        victoryTitle.textContent = title.slice(0, 7);
+        victoryTitle.style.color = '#FF4747';
+        teamTitle.textContent = title.split('Défaite')[1];
+        teamTitle.prepend(victoryTitle);
+        teamTitle.style.display = 'flex';
+        teamTitle.style.gap = '.3rem';
+    } else {
+        teamTitle.textContent = title;
+    }
+
+    const damageTitle = document.createElement('span');
+    damageTitle.textContent = "Dégats";
+    damageTitle.className = 'match-card--team-title';
+
+    const wardTitle = document.createElement('span');
+    wardTitle.textContent = "Score de vision";
+    wardTitle.className = 'match-card--team-title';
+
+    const goldTitle = document.createElement('span');
+    goldTitle.textContent = "Or gagné";
+    goldTitle.className = 'match-card--team-title';
+
+    const objectsTitle = document.createElement('span');
+    objectsTitle.textContent = "Objets";
+    objectsTitle.className = 'match-card--team-title';
+
+    teamHeader.appendChild(teamTitle);
+    teamHeader.appendChild(damageTitle);
+    teamHeader.appendChild(wardTitle);
+    teamHeader.appendChild(goldTitle);
+    teamHeader.appendChild(objectsTitle);
+
+    for (let i = start; i <= end; i++) {
+        const summoner = match.participants[i];
+        if (summoner === undefined) continue;
+        buildTeamPlayerCard(
+            teamHeader,
+            summoner.championName,
+            summoner.summoner1Id,
+            summoner.summoner2Id,
+            summoner.summonerName,
+            summoner.summonerLevel,
+            summoner.damages,
+            summoner.visionScore,
+            summoner.golds,
+            summoner.items,
+            summoner.win,
+            match.maxDamage,
+            match.maxGolds
+        );
+    }
+
+    return teamHeader;
+    
 }
 
 const buildMatchCard = (summonerName, match, rankAverageGame) => {
@@ -397,26 +586,38 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
         }
     }
 
-
-
     const queuePlayed = document.createElement('span');
     queuePlayed.className = 'match-card--queue-played';
 
     const queuePlayedDesktop = document.createElement('span');
     queuePlayedDesktop.className = 'match-card--queue-played-desktop';
 
-    if (match.queueId == 440) {
-        queuePlayed.textContent = 'Classée Flexible';
-        queuePlayedDesktop.textContent = 'Classée Flexible';
-    } else if (match.queueId == 420) {
-        queuePlayed.textContent = 'Classée Solo';
-        queuePlayedDesktop.textContent = 'Classée Solo';
-    } else {
-        queuePlayed.textContent = 'Non classée';
-        queuePlayedDesktop.textContent = 'Non classée';
+    let queueName = 'Normal';
+
+    switch (match.queueId) {
+        case '0':
+            queueName = 'Custom';
+            break;
+        case '440':
+            queueName = 'Classée Flexible';
+            break;
+        case '420':
+            queueName = 'Classée Solo';
+            break;
+        case '1700':
+        case '1710':
+            queueName = 'Arena';
+            break;
+        case '100':
+            queueName = 'ARAM';
+            break;
+        case '450':
+            queueName = 'ARAM';
+            break;
     }
 
-
+    queuePlayed.textContent = queueName;
+    queuePlayedDesktop.textContent = queueName;
 
     const happenedTime = document.createElement('span');
     happenedTime.className = 'match-card--happened-time';
@@ -427,8 +628,6 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
     happenedTime.textContent = timeConversion(match.matchHappened);
     happenedTimeDesktop.textContent = timeConversion(match.matchHappened);
 
-
-
     const gameDuration = document.createElement('span');
     gameDuration.className = 'match-card--game-duration';
 
@@ -437,8 +636,6 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
 
     gameDuration.textContent = `${match.matchDuration.minutes}:${match.matchDuration.seconds}`;
     gameDurationDesktop.textContent = `${match.matchDuration.minutes}:${match.matchDuration.seconds}`;
-
-
 
     const kda = document.createElement('span');
     kda.className = 'match-card--kda';
@@ -558,57 +755,54 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
     gameStatsContainer.appendChild(playerStats);
     gameStatsContainer.appendChild(playerStatsDesktop);
 
+
+    const teams = [];
+
+    if (match.queueId === "1710" || match.queueId === "1700") {
+        let rank = 1;
+        for (let i = 0; i < 8; i += 2) {
+            teams.push(buildTeamTable(match, i, i + 1, `${rank === 1 ? 'Victoire' : 'Défaite'} ${rank}${rank === 1 ? 'er' : 'eme'} place`));
+            rank++;
+        }
+    } else {
+        teams.push(buildTeamTable(match, 0, 4, (match.winnerTeam === 100 ? 'Victoire' : 'Défaite') + '(Equipe bleue)'));
+        teams.push(buildTeamTable(match, 5, 9, (match.winnerTeam === 200 ? 'Victoire' : 'Défaite') + '(Equipe rouge)'));
+    }
+
+    const teamWrapper = document.createElement('div');
+    teamWrapper.className = 'team-wrapper';
+    teamWrapper.style.display = 'none';
+
+    teams.forEach(team => teamWrapper.appendChild(team));
+
+    const detailsIcon = document.createElement('img');
+    detailsIcon.className = 'match-card--details-icon';
+    detailsIcon.src = '/img/arrow-down.svg';
+
+    detailsIcon.addEventListener('click', () => { 
+        if (teamWrapper.style.display === 'grid') {
+            detailsIcon.classList.remove('toggle');
+            teamWrapper.style.display = 'none';
+            return;
+        }
+        detailsIcon.classList.add('toggle');
+        teamWrapper.style.display = 'grid';
+    });
+
+    matchCardData.appendChild(detailsIcon);
     matchCardData.appendChild(playedChamp);
     matchCardData.appendChild(gameStatsContainer);
 
-    return matchCardData;
+
+    const matchWrapper = document.createElement('div');
+    matchWrapper.className = 'match-card--wrapper';
+
+    matchWrapper.appendChild(matchCardData);
+    matchWrapper.appendChild(teamWrapper);
+
+    return matchWrapper;
 }
 
-const fetchSummonerMatches = async (summonerData) => {
-
-    const matchesID = summonerData.matches;
-    let promises = [];
-    
-    matchesID.forEach( matchID => {
-        promises.push( fetch (
-            `/matches/${matchID}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type' : 'application/json',
-                    'Accept' : 'application/json'
-                }
-            }
-        )
-        )   
-    }
-    );
-
-    const responseMatches = await Promise.all(promises);
-    promises = [];
-
-    responseMatches.forEach( (match) => {
-        promises.push(match.json());
-    }
-    );
-
-    const titleMatchHistoric = buildMatchesHistoric();
-    matchesHistoricCardsContainer.appendChild(titleMatchHistoric);
-
-    const matchesData = await Promise.all(promises);
-
-    matchesData.forEach( (match) => {
-        console.log(match);
-        const matchCard = buildMatchCard(match);
-        if (matchCard != null) {
-            matchesHistoricCardsContainer.appendChild(matchCard);
-        }
-    }
-
-
-    );
-
-}
 
 const fetchSummonerData = async () => {
 
@@ -622,6 +816,15 @@ const fetchSummonerData = async () => {
             }
         }
     );
+
+    const responseSpell = await fetch(
+        'https://ddragon.leagueoflegends.com/cdn/13.24.1/data/en_US/summoner.json',
+        {
+            method: 'GET'
+        }
+    );
+
+    spellData = await responseSpell.json();
 
     const summonerData = await response.json();
 
@@ -687,7 +890,8 @@ const fetchSummonerData = async () => {
             document.querySelector('.spinner--historic-container').classList.remove('spinner-visible');
             document.querySelector('.spinner--historic-container').classList.add('spinner-hidden');
 
-            const matchCard = buildMatchCard(summonerData.name, match, summonerData.queues.soloQueue.tier);
+
+            const matchCard = buildMatchCard(summonerData.name, match, summonerData.queues.soloQueue === null ? 'Unranked' : summonerData.queues.soloQueue.tier);
             if (matchCard != null) {
                 matchesHistoricCardsContainer.appendChild(matchCard);
             }

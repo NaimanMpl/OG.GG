@@ -14,10 +14,14 @@ class SummonerMatch {
 
     private string $matchId;
     private array $participants;
+    private array $teams;
     private string $queueId;
     private DateTime $matchDuration;
     private DateTime $matchTimestamp;
+    private int $maxDamage;
+    private int $maxGolds;
     private int $diffInSeconds;
+    private int $winnerTeam;
 
     public function __construct(string $matchId) {
         $this->matchId = $matchId;
@@ -40,6 +44,7 @@ class SummonerMatch {
         curl_close($ch);
 
         $this->participants = [];
+        $this->teams = [];
         $this->queueId = '';
         $this->matchDuration = new DateTime('@0');
         $this->matchTimestamp = new DateTime();
@@ -65,10 +70,24 @@ class SummonerMatch {
         $diff = $currentDate->diff($this->matchTimestamp);
         $this->diffInSeconds = $diff->s + ($diff->i * 60) + ($diff->h * 3600) + ($diff->d * 86400);
 
+        $this->maxDamage = count($summoners) > 0 ? $summoners[0]["totalDamageDealtToChampions"] : null;
+        $this->maxGolds = count($summoners) > 0 ? $summoners[0]["goldEarned"] : null;
+        $this->winnerTeam = $matchData["info"]["teams"][0]["win"] === true ? 100 : 200;
+
         foreach ($summoners as $summoner) {
+            $items = [];
+            for ($i = 0; $i < 6; $i++) {
+                $items[] = $summoner["item".$i];
+            }
+
+            if ($summoner["totalDamageDealtToChampions"] > $this->maxDamage) $this->maxDamage = $summoner["totalDamageDealtToChampions"];
+            if ($summoner["goldEarned"] > $this->maxGolds) $this->maxGolds = $summoner["goldEarned"];
+
             $this->participants[] = [
                 "summonerName" => $summoner["summonerName"],
                 "summonerId" => $summoner["summonerId"],
+                "summonerLevel" => $summoner["summonerLevel"],
+                "summoenrIcon" => $summoner["profileIcon"],
                 "puuid" => $summoner["puuid"],
                 "championName" => $summoner["championName"],
                 "championId" => $summoner["championId"],
@@ -79,7 +98,14 @@ class SummonerMatch {
                 "kills" => $summoner["kills"],
                 "deaths" => $summoner["deaths"],
                 "assists" => $summoner["assists"],
-                "totalCs" => $summoner["totalMinionsKilled"] + $summoner["neutralMinionsKilled"]
+                "totalCs" => $summoner["totalMinionsKilled"] + $summoner["neutralMinionsKilled"],
+                "golds" => $summoner["goldEarned"],
+                "damages" => $summoner["totalDamageDealtToChampions"],
+                "visionScore" => $summoner["visionScore"],
+                "items" => $items,
+                "summoner1Id" => $summoner["summoner1Id"],
+                "summoner2Id" => $summoner["summoner2Id"],
+                "team" => $summoner["teamId"] === 100 ? "Blue" : "Red"
             ];
         }
 
@@ -94,7 +120,11 @@ class SummonerMatch {
             ],
             'matchHappened' => $this->diffInSeconds,
             'participants' => $this->participants,
-            'queueId' => $this->queueId
+            'maxDamage' => $this->maxDamage,
+            'maxGolds' => $this->maxGolds,
+            'queueId' => $this->queueId,
+            'teams' => $this->teams,
+            'winnerTeam' => $this->winnerTeam
         ];
     }
 

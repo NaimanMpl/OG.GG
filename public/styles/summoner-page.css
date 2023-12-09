@@ -198,6 +198,11 @@ main, .ranked-cards--container, .matches-historic-cards--container {
     color: var(--default-dark);
 }
 
+.match-card--details-icon {
+    display: none;
+}
+
+
 @keyframes spin {
     0% {
         transform: translate(-50%, -50%) rotate(0);
@@ -358,6 +363,98 @@ main, .ranked-cards--container, .matches-historic-cards--container {
 
 @media only screen and (min-width: 1024px) {
     
+    .match-card--item {
+        max-width: 35px;
+    }
+
+    .match-card-summoner--icon {
+        border-radius: 50%;
+        max-width: 60px;
+    }
+
+    .match-card-team-player--infos {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+        justify-self: start !important;
+    }
+
+    .match-card-summoners-icon--container {
+        display: flex;
+        flex-direction: column;
+        gap: .2rem;
+    }
+
+    .match-card-summoner--summoner {
+        max-width: 30px;
+    }
+
+    .match-card--items-container {
+        display: flex;
+        gap: .4rem;
+    }
+
+    .match-card-bar--container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .line {
+        grid-column: 1 / -1;
+        width: 100%;
+        height: 1px;
+        background-color: var(--light-gray);
+    }
+
+    .match-card--data {
+        position: relative;
+    }
+
+    .match-card--team-container {
+        margin-top: .7rem;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+        row-gap: 1rem;
+    }
+
+    .match-card--team-container > * {
+        justify-self: center;
+        font-weight: 500;
+    }
+
+    .match-card-summoner-infos--container {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .match-card--summonername {
+        font-weight: 600;
+    }
+
+    .match-card--team-title {
+        justify-self: center;
+        font-weight: 500;
+    }
+
+    .match-card--details-icon {
+        display: block;
+        position: absolute;
+        max-width: 15px;
+        right: 1rem;
+        bottom: 1rem;
+        cursor: pointer;
+        transform: rotate(0);
+        transition: transform 200ms ease;
+    }
+
+    .match-card--details-icon.toggle {
+        transform: rotate(180deg);
+    }
+
     main, .player-matches-ranked--container {
         padding: var(--desktop-padding);
         margin-left: 3vw;
