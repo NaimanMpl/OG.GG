@@ -54,7 +54,7 @@ function getRoom(string $url) {
                         <ul class="messages-history">
                         </ul>
                         <form class="message-form">
-                            <img class="message-form--pp" src="/img/default-pp.png" alt="Profile Picture">
+                            <?php echo '<img style="border-radius: 50%;" class="message-form--pp" src=data:image/png;base64,'.$_SESSION["profilepicture"].' alt="Profile Picture">' ?>
                             <input type="text" name="message" id="message" placeholder="Envoyer un message...">
                         </form>
                     </div>
