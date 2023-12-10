@@ -4,8 +4,10 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\ChatController;
 use App\Controllers\MatchController;
+use App\Controllers\PostController;
 use App\Middlewares\CaptchaMiddleware;
 use App\Middlewares\ChatMiddleware;
+use App\Middlewares\UserMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Ratchet\Server\IoServer;
@@ -22,6 +24,7 @@ use App\Models\Chat;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\PhpRenderer;
 use App\Controllers\PageController;
+use App\Middlewares\PostMiddleware;
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
@@ -52,18 +55,28 @@ $app->get('/users/by-name/{username}', UserController::class . ":getUserByName")
 $app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
 $app->get('/user/{userId}/followers', UserController::class . ":getFollowers");
 $app->get('/user/me', UserController::class . ":getUser")->add(AuthMiddleware::class . ":handleAuth");
+$app->post('/user/update', UserController::class . ":updateUser")->add(UserMiddleware::class . ":handleUpdate")->add(AuthMiddleware::class . ":handleAuth");
 
 $app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
 $app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
 $app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
-$app->get('/champions/updateleaderboard', ChampionController::class . ":updateLeaderboard");
+$app->get('/summoners/{summonerName}/posts', PostController::class . ":getPosts");
+
 $app->get('/summoner/{name}', SummonerController::class . ":render");
+
+$app->get('/champions/updateleaderboard', ChampionController::class . ":updateLeaderboard");
 
 $app->get('/leaderboard', ChampionController::class . ":render");
 $app->get('/champions/leaderboard', ChampionController::class . ':getLeaderboard');
 $app->get('/matches/{matchId}', MatchController::class . ':getMatch');
-$app->get('/followers', PageController::class . ":renderFollowers");
+$app->get('/follows', PageController::class . ":renderFollowers");
+
+$app->post('/post', UserController::class . ":sendPost")->add(PostMiddleware::class . ":handlePost")->add(AuthMiddleware::class . ":handleAuth");
+
+$app->get('/settings', PageController::class . ":renderSettings");
+
+$app->get('/profilepictures', UserController::class . ":getProfilePictures");
 
 $app->group('/chat', function (RouteCollectorProxy $group) {
     $group->get('', PageController::class . ":renderChat");

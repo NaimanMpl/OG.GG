@@ -64,7 +64,7 @@
     color: var(--white);
 }
 
-button[type="submit"] {
+#search-form button[type="submit"] {
     text-indent: -999px;
     position: relative;
     width: 40px;
@@ -75,7 +75,7 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-button[type="submit"]::before {
+#search-form button[type="submit"]::before {
     content: "";
     position: absolute;
     top: 50%;

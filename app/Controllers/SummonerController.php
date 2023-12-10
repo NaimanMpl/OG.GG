@@ -16,12 +16,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class SummonerController extends Controller {
 
     public function render(Request $request, Response $response, array $args) {
+        session_start();
         try {
             new Summoner($args['name']);
         } catch (SummonerNotFoundException $e) {
             return $response->withStatus(301)->withHeader('Location', '/404');
         }
-        session_start();
         $renderer = new PhpRenderer("../views");
         return $renderer->render($response->withStatus(200), "summoner-page.php");
     }

@@ -67,5 +67,7 @@ function getRoom(string $url) {
             </section>
         </div>
     </div>
+    <script src="/scripts/search.js"></script>
+    <script src="/scripts/nav.js"></script>
 </body>
 </html>

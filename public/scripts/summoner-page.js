@@ -3,6 +3,14 @@ const scrollTitles = document.querySelector('.scroll-titles-wrapper');
 const rankCardContainer = document.querySelector('.ranked-cards--container');
 const matchesHistoricCardsContainer = document.querySelector('.matches-historic-cards--container');
 const playerMatchesRankedContainer = document.querySelector('.player-matches-ranked--container');
+const postsBtn = document.querySelector('.posts-cta');
+const overviewBtn = document.querySelector('.overview-cta');
+const postsContainer = document.querySelector('.posts-container');
+const postForm = document.querySelector('.post-form');
+const postInput = document.querySelector('.post-form--input');
+
+let currentSummoner = null;
+
 
 const handleFollow = async (summonerName, button) => {
 
@@ -16,7 +24,14 @@ const handleFollow = async (summonerName, button) => {
     button.textContent = 'Suivi';
 }
 
-const buildProfilInfosContainer = (summonerName, profilPicture, server, accountLevel) => {
+const follows = (user, summonerName) => {
+    for (let i = 0; i < user.followers.length; i++) {
+        if (user.followers[i].summonerName === summonerName) return true;
+    }
+    return false;
+}
+
+const buildProfilInfosContainer = async (summonerName, profilPicture, server, accountLevel) => {
     
     const summonerProfilePictureWrapper = document.createElement('div');
     summonerProfilePictureWrapper.className = 'profileCard-cardIcon--wrapper';
@@ -68,9 +83,22 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     level.style.fontWeight = 'bold';
     level.textContent = `${accountLevel}`;
 
+    const userData = await fetchCurrentUser();
+
     const followBtnDesktop = document.createElement('button');
     followBtnDesktop.classList = 'profilCard--followBtn-desktop';
-    followBtnDesktop.textContent = 'Suivre';
+    if (userData !== null) {
+        console.log(userData);
+        if (follows(userData, summonerName)) {
+            followBtnDesktop.textContent = 'Suivi';
+            followBtnDesktop.disabled = true;
+        } else {
+            followBtnDesktop.textContent = 'Suivre';
+        }
+    } else {
+        followBtnDesktop.textContent = 'Suivre';
+    }
+    
     followBtnDesktop.addEventListener('click', () => { handleFollow(summonerName, followBtnDesktop) });
 
     levelContainer.appendChild(levelText);
@@ -98,21 +126,21 @@ const buildProfilInfosContainer = (summonerName, profilPicture, server, accountL
     container.appendChild(summonerProfilePictureWrapper);
     container.appendChild(playerInfos);
 
-    return container;
+    return new Promise(resolve => resolve(container));
 }
 
-const buildProfilCardContainer = (summonerName, profilPicture, server, accountLevel) => {
+const buildProfilCardContainer = async (summonerName, profilPicture, server, accountLevel) => {
     const followBtnNav = document.createElement('button');
     followBtnNav.className = 'profilCard--followBtn-nav';
     followBtnNav.textContent = 'Suivre';
 
-    const profilCardInfos = buildProfilInfosContainer(summonerName, profilPicture, server, accountLevel);
+    const profilCardInfos = await buildProfilInfosContainer(summonerName, profilPicture, server, accountLevel);
     const profilCard = document.createElement('div');
     profilCard.className = 'profilCard--cardFollow-container';
     profilCard.appendChild(profilCardInfos);
     profilCard.appendChild(followBtnNav);
 
-    return profilCard;
+    return new Promise(resolve => resolve(profilCard));
 }
 
 const buildScrollingTitles = (rankSoloQ, rankFlexQ) => {
@@ -624,16 +652,19 @@ const fetchSummonerData = async () => {
     );
 
     const summonerData = await response.json();
+    
 
-    document.querySelector('.spinner-container').classList.remove('spinner-visible');
-    document.querySelector('.spinner-container').classList.add('spinner-hidden');
-
+    currentSummoner = summonerData.name;
     console.log(summonerData);
 
     const serv = 'EUW';
 
-    const summonerCard = buildProfilCardContainer(summonerData.name, summonerData.profileIconId, serv, summonerData.level);
+    const summonerCard = await buildProfilCardContainer(summonerData.name, summonerData.profileIconId, serv, summonerData.level);
     profilCardContainer.appendChild(summonerCard);
+    
+    document.querySelector('.tqt').classList.add('visible');
+    document.querySelector('.spinner-container').classList.remove('spinner-visible');
+    document.querySelector('.spinner-container').classList.add('spinner-hidden');
 
     const summonerTitles = buildScrollingTitles(summonerData.queues.soloQueue, summonerData.queues.flexQueue);
     scrollTitles.appendChild(summonerTitles);
@@ -698,6 +729,7 @@ const fetchSummonerData = async () => {
         
     }
     fetchSummonerMatches();
+    fetchPosts(summonerData.name);
     playerMatchesRankedContainer.appendChild(rankCardContainer);
     playerMatchesRankedContainer.appendChild(matchesHistoricCardsContainer);
 }
@@ -716,6 +748,192 @@ const registerSummoner = async () => {
         }
     );
 }
+
+const buildPost = (username, message, date, profilePicture) => {
+    const post = document.createElement('div');
+    post.className = 'post';
+    const profileIcon = document.createElement('img');
+    profileIcon.src = `data:image/png;base64,${profilePicture}`;
+    profileIcon.alt = 'Profile Picture';
+
+    const postInfosContainer = document.createElement('div');
+    postInfosContainer.style.display = 'flex';
+    postInfosContainer.style.gap = '.5rem';
+
+    const usernameText = document.createElement('span');
+    usernameText.className = 'post-username';
+    usernameText.textContent = username;
+
+    const dateText = document.createElement('span');
+    dateText.className = 'post-date';
+    dateText.textContent = date;
+
+    const messageText = document.createElement('p');
+    messageText.className = 'post-message';
+    messageText.textContent = message;
+
+    postInfosContainer.appendChild(usernameText);
+    postInfosContainer.appendChild(dateText);
+
+    const postContent = document.createElement('div');
+    postContent.className = 'post-content';
+
+    postContent.appendChild(postInfosContainer);
+    postContent.appendChild(messageText);
+
+    post.appendChild(profileIcon);
+    post.appendChild(postContent);
+
+    return post;
+
+}
+
+const timeSince = (date) => {
+    const now = new Date();
+    const msDifference = now - date;
+
+    // Convertir en différentes unités de temps
+    let seconds = Math.floor(msDifference / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+
+    // Calculer les restes pour chaque unité
+    seconds %= 60;
+    minutes %= 60;
+    hours %= 24;
+
+    // Construction de la chaîne de résultat
+    let resultat = "";
+    if (days > 0) {
+        resultat += days + " jours ";
+    } else if (hours > 0) {
+        resultat += hours + " heures ";
+    } else if (minutes > 0) {
+        resultat += minutes + " minutes ";
+    } else if (seconds > 0) {
+        resultat += seconds + " secondes ";
+    }
+
+    return "Il y a " + resultat.trim();
+}
+
+const fetchCurrentUser = async () => {
+    const userResponse = await fetch(
+        '/user/me',
+        {
+            method: 'GET'
+        }
+    );
+
+    if (userResponse.status !== 200) {
+        return new Promise((resolve) => resolve(null));
+    }
+
+    const user = await userResponse.json();
+
+    return new Promise((resolve) => resolve(user));
+}
+
+const sendPost = async (e) => {
+    e.preventDefault();
+
+
+    if (postInput.value.length === 0 || postInput.value.length > 100 || currentSummoner === null) return;
+
+    const response = await fetch(
+        '/post',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify({ message: postInput.value, summonerName: currentSummoner })
+        }
+    );
+    
+    console.log(response);
+    console.log({ message: postInput.value, summonerName: currentSummoner });
+
+    if (response.status !== 200) return;
+
+    const user = await fetchCurrentUser();
+
+    if (user === null) return;
+    
+    const postCard = buildPost(user.username, postInput.value, "Maintenant", user.profilepicture);
+    document.querySelector('.posts-container').prepend(postCard);
+    postInput.value = "";
+}
+
+const fetchPosts = async (summoner) => {
+
+    const spinnerHistoric = document.createElement('div');
+    spinnerHistoric.className = 'spinner';
+    document.querySelector('.spinner--posts-container').appendChild(spinnerHistoric);
+
+    const response = await fetch(
+        `/summoners/${summoner}/posts`,
+        {
+            method: 'GET'
+        }
+    );
+    
+    if (response.status !== 200) return;
+
+    const posts = await response.json();
+    
+    posts.forEach((post) => { 
+        const postCard = buildPost(post.username, post.message, timeSince(new Date(post.date).getTime()), post.profilepicture);
+        document.querySelector('.posts-container').appendChild(postCard);
+    });
+
+    document.querySelector('.spinner--posts-container').classList.add('spinner-visible');
+
+    document.querySelector('.spinner--posts-container').classList.remove('spinner-visible');
+    document.querySelector('.spinner--posts-container').classList.add('spinner-hidden');
+}
+
+
+const showComments = () => {
+    postsContainer.classList.remove('hidden');
+    postsContainer.classList.add('visible');
+    playerMatchesRankedContainer.style.flexDirection = 'row-reverse';
+    matchesHistoricCardsContainer.classList.remove('visible');
+    matchesHistoricCardsContainer.classList.add('hidden');
+    const formContainer = document.querySelector('.form-container')
+    if (formContainer !== null) formContainer.style.display = 'flex';
+    overviewBtn.classList.remove('active-link');
+    postsBtn.classList.add('active-link');
+        
+}
+
+const showProfile = () => {
+    const formContainer = document.querySelector('.form-container')
+    if (formContainer !== null) formContainer.style.display = 'none';
+    playerMatchesRankedContainer.style.flexDirection = 'row';
+    matchesHistoricCardsContainer.classList.add('visible');
+    matchesHistoricCardsContainer.classList.remove('hidden');
+    postsContainer.classList.remove('visible');
+    postsContainer.classList.add('hidden');
+    overviewBtn.classList.add('active-link');
+    postsBtn.classList.remove('active-link');
+}
+
+const handleType = (e) => {
+    if (e.target.value.length > 100) {
+        e.target.value = e.target.value.substring(0, 10);
+    }
+}
+
+
+
+if (postInput !== null) postInput.addEventListener('input', handleType);
+overviewBtn.addEventListener('click', showProfile);
+postsBtn.addEventListener('click', showComments);
+
+if (postForm !== null) postForm.addEventListener('submit', sendPost);
 
 fetchSummonerData();
 registerSummoner();

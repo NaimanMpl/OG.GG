@@ -38,9 +38,29 @@
                 </div>
             </div>
         </div>
-        <div>
-            <a href="#" class="overview-comments">Vue d'ensemble</a>
-            <a href="#" class="overview-comments">Commentaires</a>
+        <div class="grid-container">
+            <div class="tqt hidden">
+                <div class="links-container">
+                    <span class="overview-cta active-link">Aperçu</span>
+                    <span class="posts-cta">Commentaires</span>
+                </div>
+            </div>
+            <?php
+            if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
+                echo "
+                    <div class='form-container' style='display: none;'>
+                        <img src='data:image/png;base64,".$_SESSION['profilepicture']."' alt='Profile picture'>
+                        <form class='post-form'>
+                            <input class='post-form--input' type='text' name='message' id='message' placeholder='Ajouter un commentaire...'>
+                            <div class='button-container'>
+                                <button type='submit'>Envoyer</button>
+                            </div>
+                        </form>
+                    </div>
+                ";
+            }
+            ?>
+            
             <div class="player-matches-ranked--container">
                 <div class="ranked-cards--container">
     
@@ -48,6 +68,11 @@
                 <div class="matches-historic-cards--container">
 
                     <div class="spinner--historic-container">
+                        
+                    </div>
+                </div>
+                <div class="posts-container hidden">
+                    <div class="spinner--posts-container">
                         
                     </div>
                 </div>

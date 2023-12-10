@@ -3,7 +3,7 @@
     <?php
     if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
         echo '<div class="nav-logged--info" style="display: flex; gap: .7rem; align-items: center;">';
-        echo '<img style="max-width: 30px;" class="nav-profile-icon" src="/img/default-pp.png" alt="Paramètres">';
+        echo '<img style="max-width: 30px; border-radius: 50%;" class="nav-profile-icon" src=data:image/png;base64,'.$_SESSION['profilepicture'].' alt="Paramètres">';
         echo "<span style='color: var(--white); font-weight: 500;'>".$_SESSION["username"]."</span>";
         echo "</div>";
     }
@@ -19,7 +19,7 @@
                     <?php
                     if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
                        echo '
-                       <img class="nav-profile-icon" src="/img/default-pp.png" alt="Account Icon">
+                       <img class="nav-profile-icon" style="border-radius: 50%;" src="data:image/png;base64,'.$_SESSION['profilepicture'].'" alt="Account Icon">
                        <div class="nav-profile-credentials">
                            <p class="nav-profile--username">'.$_SESSION['username'].'</p>
                            <p class="nav-profile--email">'.$_SESSION['email'].'</p>
@@ -38,7 +38,7 @@
                 </div>
                 <?php
                 if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-                    echo '<img class="nav-profile--settings" src="/img/settings.svg" alt="Paramètres">';
+                    echo '<a href="/settings"><img class="nav-profile--settings" src="/img/settings.svg" alt="Paramètres"></a>';
                 }
                 ?>
             </div>

@@ -15,11 +15,27 @@ class PageController {
     }
 
     public function renderChat(Request $request, Response $response, array $args) {
+        session_start();
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            return $response->withStatus(301)->withHeader('Location', '/login');
+        }
         return $this->renderer->render($response->withStatus(200), 'chat.php');
     }
 
     public function renderFollowers(Request $request, Response $response, array $args) {
+        session_start();
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            return $response->withStatus(301)->withHeader('Location', '/login');
+        }
         return $this->renderer->render($response->withStatus(200), 'followers.php');
+    }
+
+    public function renderSettings(Request $request, Response $response, array $args) {
+        session_start();
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            return $response->withStatus(301)->withHeader('Location', '/login');
+        }
+        return $this->renderer->render($response->withStatus(200), 'settings.php');
     }
 
 }

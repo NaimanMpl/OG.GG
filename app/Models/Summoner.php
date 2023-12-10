@@ -70,20 +70,14 @@ class Summoner {
     public function fetchRankedData() {
         $apiUrl = 'https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/'.$this->id."?api_key=".$_ENV['RIOT_API_KEY'];
         $rankedData = json_decode(file_get_contents($apiUrl), true);
-        if (count($rankedData) === 1) {
-            $rank = RankFactory::createRank($rankedData[0]["tier"], $rankedData[0]["rank"]);
-            
-            if ($rankedData[0]["queueType"] === "RANKED_SOLO_5x5") {
-                $this->soloQueue = new Queue($rank, $rankedData[0]["wins"], $rankedData[0]["losses"], $rankedData[0]["leaguePoints"]);
-            } else {
-                $this->flexQueueRank = new Queue($rank, $rankedData[0]["wins"], $rankedData[0]["losses"], $rankedData[0]["leaguePoints"]);
+        for ($i = 0; $i < count($rankedData); $i++) {
+            if ($rankedData[$i]["queueType"] === "RANKED_SOLO_5x5") {
+                $soloQueueRank = RankFactory::createRank($rankedData[$i]["tier"], $rankedData[$i]["rank"]);
+                $this->soloQueue = new Queue($soloQueueRank, $rankedData[$i]["wins"], $rankedData[$i]["losses"], $rankedData[$i]["leaguePoints"]);
+            } else if ($rankedData[$i]["queueType"] === "RANKED_FLEX_SR") {
+                $flexQueueRank = RankFactory::createRank($rankedData[$i]["tier"], $rankedData[$i]["rank"]);
+                $this->flexQueue = new Queue($flexQueueRank, $rankedData[$i]["wins"], $rankedData[$i]["losses"], $rankedData[$i]["leaguePoints"]);
             }
-        } else if (count($rankedData) === 2) {
-            $soloQueueRank = RankFactory::createRank($rankedData[0]["tier"], $rankedData[0]["rank"]);
-            $flexQueueRank = RankFactory::createRank($rankedData[1]["tier"], $rankedData[1]["rank"]);
-            
-            $this->soloQueue = new Queue($soloQueueRank, $rankedData[0]["wins"], $rankedData[0]["losses"], $rankedData[0]["leaguePoints"]);
-            $this->flexQueue = new Queue($flexQueueRank, $rankedData[1]["wins"], $rankedData[1]["losses"], $rankedData[1]["leaguePoints"]);
         }
     }
 

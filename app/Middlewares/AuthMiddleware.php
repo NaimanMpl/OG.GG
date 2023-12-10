@@ -47,6 +47,7 @@ class AuthMiddleware {
             $request = $request->withAttribute("userId", $user["id"]);
             $request = $request->withAttribute("username", $user["username"]);
             $request = $request->withAttribute("email", $user["email"]);
+            $request = $request->withAttribute("profilepicture", base64_encode($user["picture"]));
 
             return $handler->handle($request);
         } catch (PDOException $e) {
@@ -110,12 +111,12 @@ class AuthMiddleware {
         }
     }
 
-    public function handleAuth(Request $request, RequestHandler $handler): Response {
+    public function handleAuth(Request $request, RequestHandler $handler) {
         session_start();
         $response = new Response();
         
         if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
-            return $response->withStatus(301)->withHeader('Location', '/');
+            return ErrorHandler::sendError($response, 400, "Veuillez vous connecter !");
         }
 
         return $handler->handle($request);

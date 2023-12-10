@@ -55,7 +55,7 @@ class UserController {
 
     public function findUniqueUser(Database $database, string $email, string $password): array {
         $conn = $database->getConnection();
-        $query = "SELECT * FROM users WHERE email=?";
+        $query = "SELECT users.id, email, username, password, created_at, profilepicture, picture FROM users JOIN profilepictures ON users.profilepicture = profilepictures.id WHERE email=?";
         $stmt = $conn->prepare($query);
         $stmt->execute(array($email));
         $user = $stmt->fetch();
@@ -120,6 +120,7 @@ class UserController {
         $_SESSION["userId"] = $request->getAttribute("userId");
         $_SESSION["username"] = $request->getAttribute("username");
         $_SESSION["email"] = $request->getAttribute("email");
+        $_SESSION["profilepicture"] = $request->getAttribute("profilepicture");
 
         $response->getBody()->write(json_encode(["success" => true]));
 
@@ -229,7 +230,8 @@ class UserController {
                 "userId" => $_SESSION["userId"],
                 "email" => $_SESSION["email"],
                 "username" => $_SESSION["username"],
-                "followers" => $followers
+                "followers" => $followers,
+                "profilepicture" => $_SESSION["profilepicture"]
             ];
 
             $response->getBody()->write(json_encode($user));
@@ -238,6 +240,92 @@ class UserController {
             return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
         }
     }
+
+    public function sendPost(Request $request, Response $response) {
+        $data = json_decode($request->getBody(), true);
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "INSERT INTO posts(user_id, summoner_name, message) VALUES(?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(array($_SESSION["userId"], $data["summonerName"], $data["message"]));
+    
+            $response->getBody()->write(json_encode([ "success" => true ]));
+            return $response->withStatus(200)->withHeader("Content-Type", "application/json");
+        } catch (PDOException $e) {
+
+            if ($e->errorInfo[1] === 1452) {
+                return ErrorHandler::sendError($response, 400, "Aucun utilisateur avec cet identifiant existe !");
+            }
+
+            $response->getBody()->write($e->getMessage());
+
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème");
+        }
+    }
+
+    public function getProfilePictures(Request $request, Response $response) {
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $query = "SELECT * FROM profilepictures";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+
+            $results = $stmt->fetchAll();
+            $profilepictures = [];
+
+            foreach ($results as $profilepicture) {
+                $profilepictures[] = ["id" => $profilepicture["id"], "image" => base64_encode($profilepicture["picture"])];
+            }
+
+            $response->getBody()->write(json_encode($profilepictures));
+
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        } catch (PDOException $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème.");
+        }
+    }
+
+    public function updateUser(Request $request, Response $response) {
+        $userData = json_decode($request->getBody(), true);
+        $method = $request->getAttribute("method");
+        try {
+            $database = new Database();
+            $conn = $database->getConnection();
+            if ($method === "both" || $method == "profilepicture") {
+                $query = "UPDATE users SET profilepicture=? WHERE id=?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute(array($userData["profilePicture"], $_SESSION["userId"]));
+    
+                $query = "SELECT picture FROM profilepictures WHERE id=?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute(array($userData["profilePicture"]));
+
+                $result = $stmt->fetch();
+                $_SESSION['profilepicture'] = base64_encode($result["picture"]);
+
+            }
+
+            if ($method === "both" || $method == "password") {
+                // Traitement
+            }
+
+            $response->getBody()->write(json_encode(["message" => "Profil mis à jour avec succès.", "success" => true]));
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        } catch (PDOException $e) {
+
+            if ($e->errorInfo[1] === 1054) {
+                $response->getBody()->write($e->getMessage());
+                return ErrorHandler::sendError($response, 400, "La photo de profil renseigné n'existe pas !");
+            }
+
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème.");
+        } catch (Exception $e) {
+            return ErrorHandler::sendError($response, 500, "Le serveur a rencontré un problème ou la photo de profil n'existe pas.");
+        }
+    }
+    
 }
 
 ?>
