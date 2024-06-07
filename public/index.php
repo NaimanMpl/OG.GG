@@ -52,18 +52,18 @@ $app->get('/register', RegisterController::class . ":render");
 $app->post('/user/register', UserController::class . ":register")->add(AuthMiddleware::class . ":handleRegister")->add(CaptchaMiddleware::class . ":verifyCaptcha");
 $app->get('/users/by-email', UserController::class . ":getUserByEmail");
 $app->get('/users/by-name/{username}', UserController::class . ":getUserByName");
-$app->get('/user/follow/{summonerName}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
+$app->get('/user/follow/{summonerName}/{tag}', UserController::class . ":followSummoner")->add(FollowMiddleware::class . ":handleFollow");
 $app->get('/user/{userId}/followers', UserController::class . ":getFollowers");
 $app->get('/user/me', UserController::class . ":getUser")->add(AuthMiddleware::class . ":handleAuth");
 $app->post('/user/update', UserController::class . ":updateUser")->add(UserMiddleware::class . ":handleUpdate")->add(AuthMiddleware::class . ":handleAuth");
 
-$app->get('/summoners/{summonerName}', SummonerController::class . ":getSummoner");
+$app->get('/summoners/{summonerName}/{tag}', SummonerController::class . ":getSummoner");
 $app->get('/summoners/register/{summonerName}', SummonerController::class . ":registerSummoner");
-$app->get('/summoners/search/{summonerName}', SummonerController::class . ":search");
+$app->get('/summonerssearch/{summonerName}', SummonerController::class . ":search");
 $app->get('/summoners/matchs/register/{matchId}', ChampionController::class . ":update");
-$app->get('/summoners/{summonerName}/posts', PostController::class . ":getPosts");
+$app->get('/summoners/{summonerName}/{tag}/posts', PostController::class . ":getPosts");
 
-$app->get('/summoner/{name}', SummonerController::class . ":render");
+$app->get('/summoner/{name}/{tag}', SummonerController::class . ":render");
 
 $app->get('/champions/updateleaderboard', ChampionController::class . ":updateLeaderboard");
 

@@ -23,9 +23,9 @@ const handleSearchClick = () => {
     document.querySelector('body').classList.add('black-body');
 }
 
-const buildSummonerCard = (summonerName, profileIconID) => {
+const buildSummonerCard = (summonerName, summonerTag, profileIconID) => {
     const resultAction = document.createElement('a');
-    resultAction.href = `/summoner/${summonerName}`;
+    resultAction.href = `/summoner/${summonerName}/${summonerTag}`;
     resultAction.style.display = 'block';
     resultAction.className = 'result-card--wrapper';
     const resultCardWrapper = document.createElement('div');
@@ -82,10 +82,12 @@ const handleTyping = async (e) => {
         }
     }
 
-    const summonerName = e.target.value;
-    console.log(`/summoners/search/${encodeURIComponent(summonerName)}`)
+    const summonerInfos = summonerInput.value.split('#');
+    const summonerName = summonerInfos[0];
+    const summonerTag = summonerInfos[1];
+    console.log(`/summonerssearch/${encodeURIComponent(summonerName)}`)
     const response = await fetch(
-        `/summoners/search/${encodeURIComponent(summonerName)}`,
+        `/summonerssearch/${encodeURIComponent(summonerName)}`,
         {
             method: 'GET',
             headers: {
@@ -112,7 +114,7 @@ const handleTyping = async (e) => {
     resultWrappers.forEach((element) => element.remove());
 
     data.results.forEach(result => {
-        const resultCard = buildSummonerCard(result.name, result.profileIconId);
+        const resultCard = buildSummonerCard(result.name, result.tag, result.profileIconId);
         resultsContainer.appendChild(resultCard);
     });
 
@@ -130,8 +132,10 @@ const closeNavMenu = () => {
 
 const handleSubmit = (e) => {
     e.preventDefault();
-
-    window.location.href = `/summoner/${summonerInput.value}`;
+    const summonerInfos = summonerInput.value.split('#');
+    const summonerName = summonerInfos[0];
+    const summonerTag = summonerInfos[1];
+    window.location.href = `/summoner/${summonerName}/${summonerTag}`;
 }
 
 searchBtn.addEventListener('click', handleSearchClick);

@@ -84,6 +84,8 @@ class SummonerMatch {
             if ($summoner["goldEarned"] > $this->maxGolds) $this->maxGolds = $summoner["goldEarned"];
 
             $this->participants[] = [
+                "riotIdGameName" => $summoner["riotIdGameName"],
+                "riotIdTagline"=> $summoner["riotIdTagline"],
                 "summonerName" => $summoner["summonerName"],
                 "summonerId" => $summoner["summonerId"],
                 "summonerLevel" => $summoner["summonerLevel"],

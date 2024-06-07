@@ -18,6 +18,7 @@ class FollowMiddleware {
         $response = new SlimResponse();
         $routeContext = RouteContext::fromRequest($request);
         $summonerName = $routeContext->getRoute()->getArgument('summonerName');
+        $summonerTag = $routeContext->getRoute()->getArgument('tag');
 
         if (!isset($_SESSION["userId"]) || empty($_SESSION["userId"])) {
             $response->getBody()->write(json_encode(["error" => "Vous devez être connecté pour suivre un summoner !"]));
@@ -25,11 +26,12 @@ class FollowMiddleware {
         }
 
         try {
-            $summoner = new Summoner($summonerName);
+            $summoner = new Summoner($summonerName, $summonerTag);
 
             $request = $request->withAttribute("summonerId", $summoner->getId());
             $request = $request->withAttribute("summonerPuuid", $summoner->getPuuid());
             $request = $request->withAttribute("summonerName", $summoner->getName());
+            $request = $request->withAttribute("summonerTag", $summoner->getTag());
 
             return $handler->handle($request);
         } catch (SummonerNotFoundException $e) {

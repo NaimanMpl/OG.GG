@@ -9,6 +9,7 @@ use App\Models\Queue;
 class Summoner {
 
     private string $name;
+    private string $tag;
     private string $puuid;
     private string $id;
     private int $level;
@@ -17,17 +18,19 @@ class Summoner {
     private ?Queue $soloQueue = null;
     private ?Queue $flexQueue = null;
 
-    public function __construct(string $name) {
+    public function __construct(string $name, string $tag) {
         $this->name = $name;
+        $this->tag = $tag;
         $this->matchesId = [];
+        $this->fetchAccountrData();
         $this->fetchSummonerData();
         $this->fetchRankedData();
         $this->fetchMatchHistoryData(0, 10);
     }
 
-    public function fetchSummonerData() {
+    public function fetchAccountrData() {
         $ch = curl_init();
-        $apiUrl = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/".urlencode($this->name);
+        $apiUrl = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/".urlencode($this->name)."/".urlencode($this->tag);
 
         curl_setopt($ch, CURLOPT_URL, $apiUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -52,8 +55,15 @@ class Summoner {
         }
 
         $summonerData = json_decode($response, true);
-        $this->name = urldecode($summonerData['name']);
+        $this->name = urldecode($summonerData['gameName']);
         $this->puuid = $summonerData['puuid'];
+        $this->tag = $summonerData['tagLine'];
+
+    }
+
+    public function fetchSummonerData() {
+        $apiUrl = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/".$this->puuid."?api_key=".$_ENV['RIOT_API_KEY'];
+        $summonerData = json_decode(file_get_contents($apiUrl), true);
         $this->id = $summonerData['id'];
         $this->level = $summonerData['summonerLevel'];
         $this->profileIconId = $summonerData['profileIconId'];
@@ -89,6 +99,10 @@ class Summoner {
         return $this->name;
     }
 
+    public function getTag(): string {
+        return $this->tag;
+    }
+
     public function getPuuid(): string {
         return $this->puuid;
     }
@@ -108,6 +122,7 @@ class Summoner {
     public function toArray(): array {
         return [
             'name' => $this->getName(),
+            'tag' => $this->tag,
             'level' => $this->getLevel(),
             'profileIconId' => $this->getProfileIconId(),
             'queues' => [

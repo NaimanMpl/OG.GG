@@ -12,12 +12,13 @@ class PostController {
 
     public function getPosts(Request $request, Response $response, array $args) {
         $summonerName = $args['summonerName'];
+        $summonerTag = $args['tag'];
         try {
             $database = new Database();
             $conn = $database->getConnection();
-            $query = "SELECT posts.id, picture, posts.user_id, users.username, summoner_name, message, date FROM posts JOIN users ON users.id=posts.user_id JOIN profilepictures ON users.profilepicture=profilepictures.id WHERE summoner_name=? ORDER BY posts.date DESC";
+            $query = "SELECT posts.id, picture, posts.user_id, users.username, summoner_name, summoner_tag, message, date FROM posts JOIN users ON users.id=posts.user_id JOIN profilepictures ON users.profilepicture=profilepictures.id WHERE summoner_name=? AND summoner_tag=? ORDER BY posts.date DESC";
             $stmt = $conn->prepare($query);
-            $stmt->execute(array($summonerName));
+            $stmt->execute(array($summonerName, $summonerTag));
 
             $results = $stmt->fetchAll();
             $posts = [];
@@ -26,6 +27,7 @@ class PostController {
                     "id" => $post["id"],
                     "username" => $post["username"],
                     "summonerName" => $post["summoner_name"],
+                    "summonerTag" => $post["summoner_tag"],
                     "message" => $post["message"],
                     "date" => $post["date"],
                     "profilepicture" => base64_encode($post["picture"])

@@ -18,7 +18,7 @@ class SummonerController extends Controller {
     public function render(Request $request, Response $response, array $args) {
         session_start();
         try {
-            new Summoner($args['name']);
+            new Summoner($args['name'], $args['tag']);
         } catch (SummonerNotFoundException $e) {
             return $response->withStatus(301)->withHeader('Location', '/404');
         }
@@ -28,7 +28,9 @@ class SummonerController extends Controller {
 
     public function getSummoner(Request $request, Response $response, array $args) {
         try {
-            $summoner = new Summoner($args['summonerName']);
+            $summonerName = $args['summonerName'];
+            $summonerTag = $args['tag'];
+            $summoner = new Summoner($summonerName, $summonerTag);
             $response->getBody()->write(json_encode($summoner->toArray()));
             return (
                 $response
@@ -44,13 +46,15 @@ class SummonerController extends Controller {
 
     public function registerSummoner(Request $request, Response $response, array $args) {
         $summonerName = $args['summonerName'];
+        $summonerTag = $args['tag'];
+        
         try {
-            $summoner = new Summoner($summonerName);
+            $summoner = new Summoner($summonerName, $summonerTag);
             $database = new Database();
             $conn = $database->getConnection();
-            $query = "INSERT INTO summoners(id, puuid, name, level, profileiconid) VALUES(?, ?, ?, ?, ?)";
+            $query = "INSERT INTO summoners(id, puuid, name, tag, level, profileiconid) VALUES(?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->execute(array($summoner->getId(), $summoner->getPuuid(), $summoner->getName(), $summoner->getLevel(), $summoner->getProfileIconId()));
+            $stmt->execute(array($summoner->getId(), $summoner->getPuuid(), $summoner->getName(), $summoner->getTag(), $summoner->getLevel(), $summoner->getProfileIconId()));
             $response->getBody()->write(json_encode(['success' => true]));
             return (
                 $response
@@ -69,7 +73,7 @@ class SummonerController extends Controller {
         try {
             $database = new Database();
             $conn = $database->getConnection();
-            $query = "SELECT name, profileIconId FROM summoners WHERE name LIKE ?";
+            $query = "SELECT name, tag, profileIconId FROM summoners WHERE name LIKE ?";
             $stmt = $conn->prepare($query);
             $stmt->execute(array($summonerName));
             $summoners = $stmt->fetchAll();

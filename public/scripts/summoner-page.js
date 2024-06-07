@@ -14,11 +14,11 @@ let currentSummoner = null;
 
 let spellData = null;
 
-const handleFollow = async (summonerName, button) => {
+const handleFollow = async (summonerName, summonerTag, button) => {
 
     button.textContent = 'Chargement...';
     const response = await fetch (
-        `/user/follow/${summonerName}`,
+        `/user/follow/${summonerName}/${summonerTag}`,
         {
             method: 'GET',
         }
@@ -33,7 +33,7 @@ const follows = (user, summonerName) => {
     return false;
 }
 
-const buildProfilInfosContainer = async (summonerName, profilPicture, server, accountLevel) => {
+const buildProfilInfosContainer = async (summonerName, summonerTag, profilPicture, server, accountLevel) => {
     
     const summonerProfilePictureWrapper = document.createElement('div');
     summonerProfilePictureWrapper.className = 'profileCard-cardIcon--wrapper';
@@ -101,7 +101,7 @@ const buildProfilInfosContainer = async (summonerName, profilPicture, server, ac
         followBtnDesktop.textContent = 'Suivre';
     }
     
-    followBtnDesktop.addEventListener('click', () => { handleFollow(summonerName, followBtnDesktop) });
+    followBtnDesktop.addEventListener('click', () => { handleFollow(summonerName, summonerTag, followBtnDesktop) });
 
     levelContainer.appendChild(levelText);
     levelContainer.appendChild(level);
@@ -131,12 +131,12 @@ const buildProfilInfosContainer = async (summonerName, profilPicture, server, ac
     return new Promise(resolve => resolve(container));
 }
 
-const buildProfilCardContainer = async (summonerName, profilPicture, server, accountLevel) => {
+const buildProfilCardContainer = async (summonerName, summonerTag, profilPicture, server, accountLevel) => {
     const followBtnNav = document.createElement('button');
     followBtnNav.className = 'profilCard--followBtn-nav';
     followBtnNav.textContent = 'Suivre';
 
-    const profilCardInfos = await buildProfilInfosContainer(summonerName, profilPicture, server, accountLevel);
+    const profilCardInfos = await buildProfilInfosContainer(summonerName, summonerTag, profilPicture, server, accountLevel);
     const profilCard = document.createElement('div');
     profilCard.className = 'profilCard--cardFollow-container';
     profilCard.appendChild(profilCardInfos);
@@ -562,13 +562,12 @@ const buildTeamTable = (match, start, end, title) => {
 const buildMatchCard = (summonerName, match, rankAverageGame) => {
 
     //Mobile version
-
     const matchCardData = document.createElement('div');
     matchCardData.className = 'match-card--data';
 
     let indexSummoner = -1;
     for (let i = 0; i < match.participants.length; i++) {
-        if (match.participants[i].summonerName === summonerName) {
+        if (match.participants[i].riotIdGameName === summonerName) {
             indexSummoner = i;
             break;
         }
@@ -592,8 +591,6 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
     playedChamp.src = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${match.participants[indexSummoner].championName}.png`;
     playedChamp.alt = 'Image du champion joué';
     playedChamp.className = 'match-card--played-champ';
-
-
 
     const rolePlayed = document.createElement('span');
     rolePlayed.className = 'match-card--role';
@@ -834,8 +831,12 @@ const buildMatchCard = (summonerName, match, rankAverageGame) => {
 
 const fetchSummonerData = async () => {
 
+    const urlInfos = window.location.href.split("/");
+    const summonerName = urlInfos[urlInfos.length - 2];
+    const summonerTag = urlInfos[urlInfos.length - 1];
+
     const response = await fetch(
-        `/summoners/${window.location.href.split("/").slice(-1)}`,
+        `/summoners/${summonerName}/${summonerTag}`,
         {
             method: 'GET',
             headers: {
@@ -857,12 +858,10 @@ const fetchSummonerData = async () => {
     const summonerData = await response.json();
     
 
-    currentSummoner = summonerData.name;
-    console.log(summonerData);
+    currentSummoner = summonerData;
+    const serv = summonerData.tag;
 
-    const serv = 'EUW';
-
-    const summonerCard = await buildProfilCardContainer(summonerData.name, summonerData.profileIconId, serv, summonerData.level);
+    const summonerCard = await buildProfilCardContainer(summonerData.name, summonerData.tag, summonerData.profileIconId, serv, summonerData.level);
     profilCardContainer.appendChild(summonerCard);
     
     document.querySelector('.tqt').classList.add('visible');
@@ -921,8 +920,10 @@ const fetchSummonerData = async () => {
             document.querySelector('.spinner--historic-container').classList.remove('spinner-visible');
             document.querySelector('.spinner--historic-container').classList.add('spinner-hidden');
 
-
             const matchCard = buildMatchCard(summonerData.name, match, summonerData.queues.soloQueue === null ? 'Unranked' : summonerData.queues.soloQueue.tier);
+            
+            console.log(matchCard)
+
             if (matchCard != null) {
                 matchesHistoricCardsContainer.appendChild(matchCard);
             }
@@ -933,16 +934,18 @@ const fetchSummonerData = async () => {
         
     }
     fetchSummonerMatches();
-    fetchPosts(summonerData.name);
+    fetchPosts(summonerData.name, summonerData.tag);
     playerMatchesRankedContainer.appendChild(rankCardContainer);
     playerMatchesRankedContainer.appendChild(matchesHistoricCardsContainer);
 }
 
 const registerSummoner = async () => {
-    const summonerName = window.location.href.split("/").slice(-1);
+    const urlInfos = window.location.href.split("/");
+    const summonerName = urlInfos[urlInfos.length - 2];
+    const summonerTag = urlInfos[urlInfos.length - 1];
     
     await fetch(
-        `/summoners/register/${summonerName}`,
+        `/summoners/register/${summonerName}/${summonerTag}`,
         {
             method: 'GET',
             headers: {
@@ -1043,7 +1046,7 @@ const sendPost = async (e) => {
     e.preventDefault();
 
 
-    if (postInput.value.length === 0 || postInput.value.length > 100 || currentSummoner === null) return;
+    if (postInput.value.length === 0 || postInput.value.length > 100 || currentSummoner.name === null) return;
 
     const response = await fetch(
         '/post',
@@ -1053,7 +1056,7 @@ const sendPost = async (e) => {
                 'Content-Type' : 'application/json',
                 'Accept' : 'application/json'
             },
-            body: JSON.stringify({ message: postInput.value, summonerName: currentSummoner })
+            body: JSON.stringify({ message: postInput.value, summonerName: currentSummoner.name, summonerTag: currentSummoner.tag })
         }
     );
     
@@ -1071,14 +1074,14 @@ const sendPost = async (e) => {
     postInput.value = "";
 }
 
-const fetchPosts = async (summoner) => {
+const fetchPosts = async (summoner, tag) => {
 
     const spinnerHistoric = document.createElement('div');
     spinnerHistoric.className = 'spinner';
     document.querySelector('.spinner--posts-container').appendChild(spinnerHistoric);
 
     const response = await fetch(
-        `/summoners/${summoner}/posts`,
+        `/summoners/${summoner}/${tag}/posts`,
         {
             method: 'GET'
         }

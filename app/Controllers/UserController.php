@@ -155,13 +155,14 @@ class UserController {
         $summonerId = $request->getAttribute('summonerId');
         $summonerPuuid = $request->getAttribute('summonerPuuid');
         $summonerName = $request->getAttribute('summonerName');
+        $summonerTag = $request->getAttribute('summonerTag');
         $userId = $_SESSION["userId"];
         try {
             $database = new Database();
             $conn = $database->getConnection();
-            $query = "INSERT INTO follows(user_id, summoner_id, summoner_puuid, summoner_name) VALUES(?, ?, ?, ?)";
+            $query = "INSERT INTO follows(user_id, summoner_id, summoner_puuid, summoner_name, summoner_tag) VALUES(?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->execute(array($userId, $summonerId, $summonerPuuid, $summonerName));
+            $stmt->execute(array($userId, $summonerId, $summonerPuuid, $summonerName, $summonerTag));
 
             $response->getBody()->write(json_encode(["success" => true]));
 
@@ -172,7 +173,7 @@ class UserController {
             );
         } catch (PDOException $e) {
             if ($e->errorInfo[1] === 1062) {
-                return ErrorHandler::handleDatabaseError($e, $response, 500, "Cet utilisateur suit déjà ce summoner !");
+                return ErrorHandler::handleDatabaseError($e, $response, 400, "Cet utilisateur suit déjà ce summoner !");
             }
 
             return ErrorHandler::handleDatabaseError($e, $response, 500, "Le serveur a rencontré un problème, veuillez réessayer plus tard.");
@@ -246,9 +247,9 @@ class UserController {
         try {
             $database = new Database();
             $conn = $database->getConnection();
-            $query = "INSERT INTO posts(user_id, summoner_name, message) VALUES(?, ?, ?)";
+            $query = "INSERT INTO posts(user_id, summoner_name, summoner_tag, message) VALUES(?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->execute(array($_SESSION["userId"], $data["summonerName"], $data["message"]));
+            $stmt->execute(array($_SESSION["userId"], $data["summonerName"], $data["summonerTag"], $data["message"]));
     
             $response->getBody()->write(json_encode([ "success" => true ]));
             return $response->withStatus(200)->withHeader("Content-Type", "application/json");
